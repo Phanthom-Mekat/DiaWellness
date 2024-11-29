@@ -1,24 +1,31 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { FaHeartbeat } from "react-icons/fa";
 import { FaTemperatureHigh } from "react-icons/fa";
 import { IoSpeedometer } from "react-icons/io5";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { MdBloodtype } from "react-icons/md";
 import { IoManSharp } from "react-icons/io5";
-import Analytics from '../../components/doctor/patient/Analytics';
-import PastAppointments from '../../components/doctor/patient/PastAppointments';
-import Appointments from '../../components/doctor/patient/Appointments';
+import Analytics from '../../components/patient/Analytics';
+// import PastAppointments from '../../components/doctor/patient/PastAppointments';
+import Appointments from '../../components/patient/Appointments';
+import { Context } from '../../provider/ContextProvider';
 export default function PatientDashboard() {
   const [selectedUser, setSelectedUser] = useState('Grey')
+  const {doctors,loading} = useContext(Context);
 
-  const favorites = [
-    { name: 'Dr. Edalin', specialty: 'Endodontists'  , image: '/public/founder.jpg'},
-    { name: 'Dr. Maloney', specialty: 'Cardiologist'  , image: '/public/johnDoe.jpg'},
-    { name: 'Dr. Wayne', specialty: 'Dental Specialist'  , image: '/public/founder.jpg'},
-    { name: 'Dr. Maria', specialty: 'Endodontists' , image: '/public/johnDoe.jpg'},
-    { name: 'Dr. Maria', specialty: 'Endodontists' , image: '/public/founder.jpg' },
-    { name: 'Dr. Maria', specialty: 'Endodontists'  , image: '/public/johnDoe.jpg'},
-  ]
+  if (loading) {
+    return <p>Loading doctors...</p>; // Loader
+  }
+
+
+  // const favorites = [
+  //   { name: 'Dr. Edalin', specialty: 'Endodontists'  , image: '/public/founder.jpg'},
+  //   { name: 'Dr. Maloney', specialty: 'Cardiologist'  , image: '/public/johnDoe.jpg'},
+  //   { name: 'Dr. Wayne', specialty: 'Dental Specialist'  , image: '/public/founder.jpg'},
+  //   { name: 'Dr. Maria', specialty: 'Endodontists' , image: '/public/johnDoe.jpg'},
+  //   { name: 'Dr. Maria', specialty: 'Endodontists' , image: '/public/founder.jpg' },
+  //   { name: 'Dr. Maria', specialty: 'Endodontists'  , image: '/public/johnDoe.jpg'},
+  // ]
 
   return (
     <div className="p-6 w-11/12 mx-auto">
@@ -177,13 +184,13 @@ export default function PatientDashboard() {
               <button className="text-blue-600 text-sm">View All</button>
             </div>
             <div className="space-y-4">
-              {favorites.map((doctor, index) => (
+              {doctors.map((doctor, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img src={doctor.image} alt="" className="w-10 h-10 rounded-full" />
+                    <img src={doctor.Images} alt="" className="w-10 h-10 rounded-full object-cover" />
                     <div>
-                      <p className="font-medium">{doctor.name}</p>
-                      <p className="text-sm text-gray-600">{doctor.specialty}</p>
+                      <p className="font-medium">{doctor.Name}</p>
+                      <p className="text-sm text-gray-600">{doctor.Speciality}</p>
                     </div>
                   </div>
                   <button className="p-2 hover:bg-gray-100 rounded-lg">

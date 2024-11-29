@@ -50,7 +50,7 @@ import {
         {/* Profile Info */}
         <div className="pt-14 pb-6 text-center">
           <h2 className="text-xl font-semibold">Jean Grey</h2>
-          <p className="text-gray-600 text-sm mt-1">Patient ID : PT254654</p>
+          <p className="text-gray-600 text-sm mt-1">Patient ID : 20000001</p>
           <p className="text-gray-600 text-sm mt-1">
             <span className="text-blue-600">Female</span> • 32 years 03 Months
           </p>
