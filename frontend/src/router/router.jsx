@@ -8,6 +8,7 @@ import PatientDashboard from "../pages/Patient/PatientDashboardPage";
 import CreateApppintment from "../pages/Patient/Appointment";
 
 import NDashboard from "../pages/Nutritionist/NDashboard";
+import Request from "../pages/doctor/Request";
 
 
 const router = createBrowserRouter([
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
             element: <DoctorHome/>
         },
         {
+            path: 'requests',
+            element: <Request/>
+        },
+        {
             path: 'profile',
             element: <div>Profile</div>
         },
@@ -53,10 +58,7 @@ const router = createBrowserRouter([
             path: 'patients',
             element: <div>Patients</div>
         },
-        {
-            path: 'requests',
-            element: <div>Requests</div>
-        },
+
         {
             path: 'services',
             element: <div>Specialties & Services</div>
