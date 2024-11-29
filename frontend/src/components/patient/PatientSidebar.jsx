@@ -1,8 +1,6 @@
 import { 
     RiDashboardLine, 
     RiCalendarCheckLine,
-    RiHeartLine,
-    RiTeamLine,
     RiFileList3Line,
     RiWalletLine,
     RiFileTextLine,
@@ -13,8 +11,7 @@ import {
   } from 'react-icons/ri'
   import { BsCheckCircleFill } from 'react-icons/bs'
   import { NavLink } from 'react-router-dom'
-  
-  export default function PatientSidebar() {
+function PatientSidebar() {
     const menuItems = [
       { icon: RiDashboardLine, text: 'Dashboard', path: '/patient',exact: true },
       { icon: RiCalendarCheckLine, text: 'Book Appointments', path: '/patient/appointments' },
@@ -77,4 +74,4 @@ import {
       </div>
     )
   }
-  
+export default PatientSidebar

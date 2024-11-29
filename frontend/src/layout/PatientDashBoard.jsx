@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
-
-import PatientSidebar from "../components/doctor/patient/PatientSidebar";
+import PatientSidebar from "../components/patient/PatientSidebar";
 
 // process ur child 
 const PatientDashBoard = () => {

@@ -1,12 +1,12 @@
-import { useContext } from "react"
+// import { useContext } from "react"
 import { Link } from "react-router-dom"
-import { Context } from "./provider/context"
+// import { Context } from "./provider/context"
 
 function App() {
-  const {name} = useContext(Context)
+  // const {name} = useContext(Context)
   return (
     <>
-      <h1>Welcome you are diabetes patient {name} </h1>
+      {/* <h1>Welcome you are diabetes patient {name} </h1> */}
       <nav>
         <ul>
           <li><Link to="/patient">Patient</Link></li>
