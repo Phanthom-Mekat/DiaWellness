@@ -1,7 +1,12 @@
 import { Search, Calendar, Filter, Eye, MessageSquare, X } from 'lucide-react'
+import { useContext } from 'react'
 import { BsGrid3X3GapFill, BsListUl } from 'react-icons/bs'
+import { Context } from '../../provider/ContextProvider'
 
 export default function Appointments() {
+
+  const {appointments} = useContext(Context);
+
   return (
     <div className="p-6 max-w-7xl mx-auto ">
       {/* Header */}
@@ -56,71 +61,19 @@ export default function Appointments() {
       <div className="space-y-4">
         {/* Appointment Item */}
         {
-          // have to map here
-        }
-
-        {/* Dr.Shanta Appointment */}
-        <div className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
+          appointments.map((item,index)=> 
+            <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
           <div className="flex items-center gap-4">
             <img
-              src="/public/founder.jpg"
+              src={item.doctorImage}
               alt="Dr.Shanta"
               className="w-12 h-12 rounded-full object-cover"
             />
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-blue-500 text-sm">#Apt0002</span>
-                <h3 className="font-medium">Dr.Shanta</h3>
-                <span className="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded-full">New</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span>General Visit</span>
-                <span>•</span>
-                <span>Audio Call</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-400" />
-                <span>05 Nov 2024 11:50 AM</span>
-              </div>
-              <a href="mailto:shanta@example.com" className="text-sm text-gray-500">shanta@example.com</a>
-              <div className="text-sm text-gray-500">+1 832 891 8403</div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <Eye className="w-5 h-5 text-gray-400" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-gray-400" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <X className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-              Attend
-            </button>
-          </div>
-        </div>
-
-        {/* Dr.John Appointment */}
-        <div className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-4">
-            <img
-              src="/public/johnDoe.jpg"
-              alt="Dr.John"
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-blue-500 text-sm">#Apt0003</span>
-                <h3 className="font-medium">Dr.John</h3>
+                <span className="text-blue-500 text-sm">{item.appointmentID}</span>
+                <h3 className="font-medium">{item.doctorName}</h3>
+                {/* <span className="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded-full">New</span> */}
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span>General Visit</span>
@@ -134,10 +87,10 @@ export default function Appointments() {
             <div className="text-right">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-gray-400" />
-                <span>27 Oct 2024 09:30 AM</span>
+                <span>{item.appointmentDate}</span>
               </div>
-              <a href="mailto:john@example.com" className="text-sm text-gray-500">john@example.com</a>
-              <div className="text-sm text-gray-500">+1 749 104 6291</div>
+              <a href="mailto:shanta@example.com" className="text-sm text-gray-500">{item.doctorEmail}</a>
+              <div className="text-sm text-gray-500">{item.doctorPhone}</div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -157,6 +110,11 @@ export default function Appointments() {
             </button>
           </div>
         </div>
+          )
+        }
+
+
+       
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 import  { useContext, useState } from "react";
 import { Context } from "../../provider/ContextProvider";
 import { Heart, MapPin, Calendar, Star, CheckCircle2, Search } from "lucide-react";
+import swal from 'sweetalert';
 
 export default function CreateAppointment() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,6 +15,32 @@ export default function CreateAppointment() {
 
   if (!doctors || doctors.length === 0) {
     return <p>No doctors found.</p>;
+  }
+
+  const handleBookNow =(id)=>{
+    swal({
+      title: "Are you sure?",
+      text: "Confirm your Booking",
+      icon: "info",
+      dangerMode: true,
+    })
+    .then(willDelete => {
+      if (willDelete) {
+        swal("Booking Confirmed!", "Your Booking  has been placed!", "success");
+
+          fetch('http://localhost:5000/appointments', {
+            method: "POST",
+            headers: {
+              'content-type' : 'application/json'
+            },
+            body: JSON.stringify({id})
+          })
+          .then(res=>res.json())
+          .then(data => {
+            console.log(data);
+          })
+      }
+    });
   }
 
   return (
@@ -103,7 +130,7 @@ export default function CreateAppointment() {
                 <button className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                   View Profile
                 </button>
-                <button className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                <button onClick={()=>handleBookNow(doctor.DoctorID)} className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                   Book Now
                 </button>
               </div>

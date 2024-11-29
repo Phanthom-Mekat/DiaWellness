@@ -7,6 +7,7 @@ export const Context = createContext();
 const ContextProvider = ({ children }) => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [appointments,setAppointments] = useState([]);
 
 //   fetching doctors from tbl_doctors table
   useEffect(() => {
@@ -22,11 +23,27 @@ const ContextProvider = ({ children }) => {
       });
   }, []);
 
+  // fetching appointments details
+  useEffect(() => {
+    fetch("http://localhost:5000/appointments")
+      .then((res) => res.json())
+      .then((data) => {
+        setAppointments(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching doctors:", error);
+        setLoading(false);
+      });
+  }, []);
+
+
   const info = {
     name: "POK",
     doctors,
     setDoctors,
     loading,
+    appointments
   };
 
   return (

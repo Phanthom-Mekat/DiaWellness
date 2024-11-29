@@ -52,7 +52,9 @@ app.get('/appointments', (req, res) => {
             d.Name AS doctorName,
             a.Time AS appointmentTime,
             h.Email AS doctorEmail,
-            h.PhoneNumber AS doctorPhone
+            h.PhoneNumber AS doctorPhone,
+            d.Images AS doctorImage,
+            a.Date AS appointmentDate
         FROM 
             tbl_appointment a
         JOIN 
@@ -71,6 +73,50 @@ app.get('/appointments', (req, res) => {
 });
 
 
+// adding to appointment table
+
+app.post('/appointments', (req, res) => {
+    const { id: doctorID } = req.body; // Extract doctorID from the request body
+
+    if (!doctorID) {
+        return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    // Prepare static and dynamic data
+    const appointmentID = 1007; // Fixed for now
+    const patientID = 20000001; // Static patient ID for now
+    const randomDate = new Date(); // Generate a current random date
+    randomDate.setDate(randomDate.getDate() + Math.floor(Math.random() * 10)); // Random date within 10 days
+    const appointmentDate = randomDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    const appointmentTime = `${Math.floor(Math.random() * 12 + 1)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')} ${Math.random() > 0.5 ? 'AM' : 'PM'}`; // Random time
+
+    // SQL query for inserting into tbl_appointment
+    const sql = `
+        INSERT INTO tbl_appointment (AppointmentID, Time, Date, DoctorID, PatientID)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const values = [appointmentID, appointmentTime, appointmentDate, doctorID, patientID];
+
+    // Execute the query
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Failed to insert appointment' });
+        }
+
+        console.log('Inserted appointment:', result);
+
+        res.status(201).json({
+            message: 'Appointment successfully created',
+            appointmentID,
+            time: appointmentTime,
+            date: appointmentDate,
+            doctorID,
+            patientID,
+        });
+    });
+});
 
 
 
