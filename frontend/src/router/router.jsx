@@ -3,6 +3,7 @@ import App from "../App";
 import PatientDashBoard from "../layout/PatientDashBoard";
 import DoctorDashBoard from "../layout/DoctorDashBoard";
 import NutritionistDashBoard from "../layout/NutritionistDashBoard";
+import DoctorHome from "../pages/doctor/DoctorHome";
 
 const router = createBrowserRouter([
     {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
         children: [
         {
             path: '',
-            element: <div>Home</div>
+            element: <DoctorHome/>
         },
         {
             path: 'profile',
