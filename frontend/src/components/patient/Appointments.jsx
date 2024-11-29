@@ -55,53 +55,9 @@ export default function Appointments() {
       {/* Appointments List */}
       <div className="space-y-4">
         {/* Appointment Item */}
-        <div className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-4">
-            <img
-              src="/public/founder.jpg"
-              alt="Dr Edalin"
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-blue-500 text-sm">#Apt0001</span>
-                <h3 className="font-medium">Dr Edalin</h3>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span>General Visit</span>
-                <span>•</span>
-                <span>Video Call</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-400" />
-                <span>11 Nov 2024 10:45 AM</span>
-              </div>
-              <a href="mailto:edalin@example.com" className="text-sm text-gray-500">edalin@example.com</a>
-              <div className="text-sm text-gray-500">+1 504 368 6874</div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <Eye className="w-5 h-5 text-gray-400" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-gray-400" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <X className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-              Attend
-            </button>
-          </div>
-        </div>
+        {
+          // have to map here
+        }
 
         {/* Dr.Shanta Appointment */}
         <div className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">

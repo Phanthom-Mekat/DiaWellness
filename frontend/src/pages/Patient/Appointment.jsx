@@ -1,61 +1,31 @@
-import { useState } from 'react';
-import { Heart, MapPin, Calendar, Star, CheckCircle2, Search } from 'lucide-react';
+import  { useContext, useState } from "react";
+import { Context } from "../../provider/ContextProvider";
+import { Heart, MapPin, Calendar, Star, CheckCircle2, Search } from "lucide-react";
 
-export default function CreateApppintment() {
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  const doctors = [
-    {
-      id: 1,
-      name: 'Dr.Edalin Hendry',
-      verified: true,
-      specialty: 'MDS - Periodontology and Oral Implantology, BDS',
-      rating: 5.0,
-      totalRatings: null,
-      nextAvailable: '23 Mar 2024',
-      location: 'Newyork, USA',
-      lastBooked: '21 Jan 2023',
-      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400'
-    },
-    {
-      id: 2,
-      name: 'Dr.Shanta Nesmith',
-      verified: true,
-      specialty: 'DO - Doctor of Osteopathic Medicine',
-      rating: 4.0,
-      totalRatings: 35,
-      nextAvailable: '27 Mar 2024',
-      location: 'Los Angeles, USA',
-      lastBooked: '18 Jan 2023',
-      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400'
-    },
-    {
-      id: 3,
-      name: 'Dr.John Ewel',
-      verified: true,
-      specialty: 'DPM - Doctor of Podiatric Medicine',
-      rating: 5.0,
-      totalRatings: null,
-      nextAvailable: '02 Apr 2024',
-      location: 'Dallas, USA',
-      lastBooked: '28 Jan 2023',
-      image: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400'
-    }
-  ];
+export default function CreateAppointment() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Use the context
+  const { doctors, loading } = useContext(Context);
+
+  if (loading) {
+    return <p>Loading doctors...</p>; // Loader
+  }
+
+  if (!doctors || doctors.length === 0) {
+    return <p>No doctors found.</p>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-gray-50">
       <div className="w-11/12 mx-auto">
-     <div className='py-5'>
-     <span className='text-2xl font-bold '>Book Appointments</span>
-     </div>
+        <div className="py-5">
+          <span className="text-2xl font-bold">Book Appointments : </span>
+        </div>
         {/* Search Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-        
           <div className="flex items-center space-x-4">
-           
             <div className="flex-1 relative">
-               
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
@@ -78,21 +48,20 @@ export default function CreateApppintment() {
               <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors">
                 <Heart className="w-5 h-5" />
               </button>
-
               <div className="flex flex-col items-center mb-4">
                 <img
-                  src={doctor.image}
-                  alt={doctor.name}
+                  src={doctor.Images}
+                  alt={doctor.Name}
                   className="w-24 h-24 rounded-full object-cover mb-3"
                 />
                 <div className="text-center">
                   <div className="flex items-center justify-center space-x-1">
-                    <h3 className="text-lg font-semibold">{doctor.name}</h3>
+                    <h3 className="text-lg font-semibold">{doctor.Name}</h3>
                     {doctor.verified && (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{doctor.specialty}</p>
+                  <p className="text-sm text-gray-600 mt-1">{doctor.Speciality}</p>
                 </div>
               </div>
 
@@ -101,14 +70,14 @@ export default function CreateApppintment() {
                   <Star
                     key={i}
                     className={`w-4 h-4 ${
-                      i < doctor.rating
-                        ? 'text-yellow-400 fill-current'
-                        : 'text-gray-300'
+                      i < doctor.Rating
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
                 <span className="text-gray-600 ml-1">
-                  {doctor.rating}
+                  {doctor.Rating}
                   {doctor.totalRatings && ` (${doctor.totalRatings})`}
                 </span>
               </div>
@@ -122,7 +91,7 @@ export default function CreateApppintment() {
                 </div>
                 <div className="flex items-center text-gray-600">
                   <MapPin className="w-4 h-4 mr-2" />
-                  <span className="text-sm">Location : {doctor.location}</span>
+                  <span className="text-sm">Location : {doctor.Location}</span>
                 </div>
               </div>
 
