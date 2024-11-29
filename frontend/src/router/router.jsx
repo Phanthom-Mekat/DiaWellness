@@ -7,6 +7,8 @@ import DoctorHome from "../pages/doctor/DoctorHome";
 import PatientDashboard from "../pages/Patient/PatientDashboardPage";
 import CreateApppintment from "../pages/Patient/Appointment";
 
+import NDashboard from "../pages/Nutritionist/NDashboard";
+
 
 const router = createBrowserRouter([
     {
@@ -91,9 +93,14 @@ const router = createBrowserRouter([
         ]
     },
     {
-        path: '/nutritionist',
-        element: <NutritionistDashBoard />
-        // children
+        path:'/nutritionist',
+        element: <NutritionistDashBoard />,
+        children:[
+            {
+                path:'/nutritionist',
+                element:<NDashboard></NDashboard>
+            }
+        ]
     },
     {
         path: '*',
