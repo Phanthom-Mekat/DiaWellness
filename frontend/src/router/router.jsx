@@ -3,6 +3,9 @@ import App from "../App";
 import PatientDashBoard from "../layout/PatientDashBoard";
 import DoctorDashBoard from "../layout/DoctorDashBoard";
 import NutritionistDashBoard from "../layout/NutritionistDashBoard";
+import PatientDashboard from "../pages/Patient/PatientDashboardPage";
+import Appointments from "../components/doctor/patient/Appointments";
+import CreateApppintment from "../pages/Patient/Appointment";
 
 const router = createBrowserRouter([
     {
@@ -11,8 +14,17 @@ const router = createBrowserRouter([
     },
     {
         path: '/patient',
-        element: <PatientDashBoard />
-        // children
+        element: <PatientDashBoard />,
+        children: [
+            {
+                path: '',
+                element: <PatientDashboard></PatientDashboard>
+            },
+            {
+                path: 'appointments',
+                element: <CreateApppintment></CreateApppintment>
+            }
+        ]
     },
     {
         path: '/doctor',
@@ -80,6 +92,11 @@ const router = createBrowserRouter([
     {
         path: '/nutritionist',
         element: <NutritionistDashBoard />
+        // children
+    },
+    {
+        path: '*',
+        element: <div>404 Page Not Found</div>
         // children
     },
 
