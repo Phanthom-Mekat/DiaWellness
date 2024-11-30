@@ -83,7 +83,7 @@ app.post('/appointments', (req, res) => {
     }
 
     // Prepare static and dynamic data
-    const appointmentID = 1007; // Fixed for now
+    // Fixed for now
     const patientID = 20000001; // Static patient ID for now
     const randomDate = new Date(); // Generate a current random date
     randomDate.setDate(randomDate.getDate() + Math.floor(Math.random() * 10)); // Random date within 10 days
@@ -92,11 +92,11 @@ app.post('/appointments', (req, res) => {
 
     // SQL query for inserting into tbl_appointment
     const sql = `
-        INSERT INTO tbl_appointment (AppointmentID, Time, Date, DoctorID, PatientID)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO tbl_appointment ( Time, Date, DoctorID, PatientID)
+        VALUES ( ?, ?, ?, ?)
     `;
 
-    const values = [appointmentID, appointmentTime, appointmentDate, doctorID, patientID];
+    const values = [ appointmentTime, appointmentDate, doctorID, patientID];
 
     // Execute the query
     db.query(sql, values, (err, result) => {
@@ -109,7 +109,7 @@ app.post('/appointments', (req, res) => {
 
         res.status(201).json({
             message: 'Appointment successfully created',
-            appointmentID,
+            
             time: appointmentTime,
             date: appointmentDate,
             doctorID,

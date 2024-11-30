@@ -9,6 +9,11 @@ import CreateApppintment from "../pages/Patient/Appointment";
 
 import NDashboard from "../pages/Nutritionist/NDashboard";
 import Request from "../pages/doctor/Request";
+import DailyHealthData from "../pages/Patient/DailyHealthData";
+import DiagnosisReport from "../components/patient/DiagnosisReport";
+import DietPlan from "../pages/Patient/DietPlan";
+import SystemDiet from "../pages/Patient/SystemDietRecommendation";
+import Prescription from "../pages/Patient/Prescription";
 
 
 const router = createBrowserRouter([
@@ -27,6 +32,28 @@ const router = createBrowserRouter([
             {
                 path: 'appointments',
                 element: <CreateApppintment></CreateApppintment>
+            },
+            {
+                path: 'dailyHealthdata',
+                element: <DailyHealthData></DailyHealthData>
+            },
+            {
+                path: 'diagnosisReport',
+                element: <DiagnosisReport></DiagnosisReport>
+            },
+            {
+                path: 'dietPlan',
+                element: <DietPlan></DietPlan>
+            },
+            
+            {
+                path: 'systemDiet',
+                element: <SystemDiet></SystemDiet>
+            },
+            
+            {
+                path: 'prescription',
+                element: <Prescription></Prescription>
             }
         ]
     },

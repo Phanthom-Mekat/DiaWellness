@@ -51,6 +51,7 @@ const PatientDashboard = () => {
         count={data.totalPatients.count}
         percentage={data.totalPatients.percentage}
         isIncrease={data.totalPatients.isIncrease}
+        
         icon={<FaUserInjured size={25} />}
       />
       <StatCard

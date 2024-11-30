@@ -9,6 +9,7 @@ import {
     RiHospitalLine,
     RiLockPasswordLine
   } from 'react-icons/ri'
+  import { CiLogout } from "react-icons/ci";
   import { BsCheckCircleFill } from 'react-icons/bs'
   import { NavLink } from 'react-router-dom'
 function PatientSidebar() {
@@ -17,15 +18,15 @@ function PatientSidebar() {
       { icon: RiCalendarCheckLine, text: 'Book Appointments', path: '/patient/appointments' },
     //   { icon: RiHeartLine, text: 'Favourites', path: '/patient/favourites' },
     //   { icon: RiTeamLine, text: 'Dependants', path: '/patient/dependants' },
-    { icon: RiFileList3Line, text: 'Daily Health Data', path: '/patient/add-records' },
-      { icon: RiFileList3Line, text: 'Add Diagnosis Records', path: '/patient/add-records' },
-      { icon: RiWalletLine, text: 'Diet Plan', path: '/patient/accounts' },
-      { icon: RiFileTextLine, text: 'Recommendation', path: '/patient/invoices' },
-      { icon: RiHospitalLine, text: 'Prescription', path: '/patient/medical-details' },
+    { icon: RiFileList3Line, text: 'Daily Health Data', path: '/patient/dailyHealthdata' },
+      { icon: RiFileList3Line, text: 'Add Diagnosis Records', path: '/patient/diagnosisReport' },
+      { icon: RiWalletLine, text: 'Diet Plan', path: '/patient/dietPlan' },
+      { icon: RiFileTextLine, text: 'Recommendation', path: '/patient/systemDiet' },
+      { icon: RiHospitalLine, text: 'Prescription', path: '/patient/prescription' },
       { icon: RiMessage2Line, text: 'Message', path: '/patient/message' },
       { icon: RiUserSettingsLine, text: 'Profile Settings', path: '/patient/settings' },
       
-      { icon: RiLockPasswordLine, text: 'Change Password', path: '/patient/change-password' },
+      { icon: CiLogout, text: 'Logout', path: '/' },
     ]
   
     return (

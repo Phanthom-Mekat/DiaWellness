@@ -9,6 +9,8 @@ import Analytics from '../../components/patient/Analytics';
 // import PastAppointments from '../../components/doctor/patient/PastAppointments';
 import Appointments from '../../components/patient/Appointments';
 import { Context } from '../../provider/ContextProvider';
+
+import {  DotLottieReact } from '@lottiefiles/dotlottie-react';
 export default function PatientDashboard() {
   const [selectedUser, setSelectedUser] = useState('Grey')
   const {doctors,loading} = useContext(Context);
@@ -49,11 +51,15 @@ export default function PatientDashboard() {
            <div className="grid grid-cols-3  w-10/12">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-red-500">
-                  <FaHeartbeat className='text-2xl'></FaHeartbeat>
+
+                  {/* <DotLottieReact className='border border-red-600 w-[100px]' src='https://lottie.host/63ee0a9d-e887-4d8d-8d59-01459059eed0/ssLvbjjs7k.lottie' loop 
+          autoplay
+          speed={1} ></DotLottieReact> */}
+                  <FaHeartbeat></FaHeartbeat>
                   <span className="text-sm text-gray-600">Heart Rate</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold">140</span>
+                  <span className="text-5xl font-bold">140</span>
                   <span className="text-sm">Bpm</span>
                   <span className="text-xs text-green-500">2%</span>
                 </div>
@@ -65,7 +71,7 @@ export default function PatientDashboard() {
                   <span className="text-sm text-gray-600">Body Temprature</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold">37.5</span>
+                  <span className="text-5xl font-bold">37.5</span>
                   <span className="text-sm">C</span>
                 </div>
               </div>
@@ -76,7 +82,7 @@ export default function PatientDashboard() {
                   <span className="text-sm text-gray-600">Glucose Level</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold">70-90</span>
+                  <span className="text-5xl font-bold">70-90</span>
                   <span className="text-xs text-red-500">6%</span>
                 </div>
               </div>
@@ -87,7 +93,7 @@ export default function PatientDashboard() {
                   <span className="text-sm text-gray-600">SPo2</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold">96%</span>
+                  <span className="text-5xl font-bold">96%</span>
                 </div>
               </div>
 
@@ -97,7 +103,7 @@ export default function PatientDashboard() {
                   <span className="text-sm text-gray-600">Blood Pressure</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold">100</span>
+                  <span className="text-5xl font-bold">100</span>
                   <span className="text-sm">mg/dl</span>
                   <span className="text-xs text-green-500">2%</span>
                 </div>
@@ -109,7 +115,7 @@ export default function PatientDashboard() {
                   <span className="text-sm text-gray-600">BMI</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold">20.1</span>
+                  <span className="text-5xl font-bold">20.1</span>
                   <span className="text-sm">kg/m2</span>
                 </div>
                 
