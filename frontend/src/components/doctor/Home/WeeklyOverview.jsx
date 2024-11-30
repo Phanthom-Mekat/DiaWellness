@@ -14,7 +14,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const WeeklyOverview = () => {
   // State to toggle between Revenue and Appointments
-  const [activeTab, setActiveTab] = useState("Revenue");
+  const [activeTab, setActiveTab] = useState("Appointments");
 
   // Weekly data for Revenue and Appointments
   const data = {

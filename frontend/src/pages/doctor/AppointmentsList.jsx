@@ -27,6 +27,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 const appointments = [
     {
@@ -264,13 +265,13 @@ function AppointmentsList() {
                     </Select>
                 </div>
             </div>
- {/* grid mode */}
+            {/* grid mode */}
             <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-4"}  >
                 {paginatedAppointments.map((appointment) => (
                     <div
                         key={appointment.id}
                         className={`bg-white rounded-lg border shadow-sm ${viewMode === "grid" ? "p-4" : "p-4 flex items-center justify-between"
-                            }`} 
+                            }`}
                     >
                         {viewMode === "grid" ? (
                             // Grid View
@@ -310,9 +311,11 @@ function AppointmentsList() {
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between pt-2">
-                                    <Button variant="outline" size="sm" className="text-sm bg-secondary text-white " >
-                                        Start Now
-                                    </Button>
+                                    <Link to='treatment'>
+                                        <Button variant="outline" size="sm" className="text-sm bg-secondary text-white " >
+                                            Start Now
+                                        </Button>
+                                    </Link>
                                     <Button variant="ghost" size="icon">
                                         <MoreVertical className="h-4 w-4" />
                                     </Button>
@@ -358,9 +361,11 @@ function AppointmentsList() {
                                     </div>
 
                                     <div className="flex items-center gap-2">
-                                        <Button variant="outline" size="sm" className="text-sm bg-blue-500 text-white ">
-                                            Start Now
-                                        </Button>
+                                        <Link to='treatment'>
+                                            <Button variant="outline" size="sm" className="text-sm bg-secondary text-white " >
+                                                Start Now
+                                            </Button>
+                                        </Link>
                                         <Button variant="ghost" size="icon">
                                             <MoreVertical className="h-4 w-4" />
                                         </Button>

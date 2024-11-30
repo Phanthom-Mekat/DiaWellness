@@ -2,19 +2,20 @@ import { format } from "date-fns";
 import { LiaTimesCircle } from "react-icons/lia";
 import { RxCheckCircled } from "react-icons/rx";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { Link } from "react-router-dom";
 const AppointmentList = () => {
     const appointments = [
         {
             id: "Apt0001",
             name: "Adrian Marshall",
-            date: new Date(2024, 10, 11, 10, 45), 
+            date: new Date(2024, 10, 11, 10, 45),
             type: "General",
-            image: "https://i.postimg.cc/x8rPf4MJ/image.png", 
+            image: "https://i.postimg.cc/x8rPf4MJ/image.png",
         },
         {
             id: "Apt0002",
             name: "Kelly Stevens",
-            date: new Date(2024, 10, 10, 11, 0), 
+            date: new Date(2024, 10, 10, 11, 0),
             type: "Clinic Consulting",
             image: "https://i.postimg.cc/76JVykGr/image.png",
         },
@@ -28,7 +29,7 @@ const AppointmentList = () => {
         {
             id: "Apt0004",
             name: "Catherine Griffin",
-            date: new Date(2024, 10, 1, 16, 0), 
+            date: new Date(2024, 10, 1, 16, 0),
             type: "Clinic Consulting",
             image: "https://i.postimg.cc/k511msTK/image.png",
         },
@@ -46,7 +47,7 @@ const AppointmentList = () => {
             {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-semibold">Appointment</h3>
-                
+
                 <div className="dropdown">
                     <label
                         tabIndex={0}
@@ -67,7 +68,7 @@ const AppointmentList = () => {
                         </li>
                     </ul>
                 </div>
-                
+
             </div>
             <hr className="border-gray-200 mb-3" />
             {/* Appointment List */}
@@ -110,12 +111,16 @@ const AppointmentList = () => {
 
                         {/* Action Buttons */}
                         <div className="flex items-center space-x-2">
-                            <button className="text-green-500 hover:bg-green-600 hover:text-white hover:rounded-full ">
-                                <RxCheckCircled   size={25} />
-                            </button>
-                            <button className=" text-red-500 hover:bg-red-600 hover:text-white hover:rounded-full ">
-                                <LiaTimesCircle size={27} />
-                            </button>
+                            <Link to='requests'>
+                                <button className="text-green-500 hover:bg-green-600 hover:text-white hover:rounded-full ">
+                                    <RxCheckCircled size={25} />
+                                </button>
+                            </Link>
+                            <Link to='requests'>
+                                <button className=" text-red-500 hover:bg-red-600 hover:text-white hover:rounded-full ">
+                                    <LiaTimesCircle size={27} />
+                                </button>
+                            </Link>
                         </div>
                     </li>
                 ))}

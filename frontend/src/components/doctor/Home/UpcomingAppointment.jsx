@@ -1,12 +1,13 @@
-import { FaVideo } from "react-icons/fa";
+import { Hospital } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const UpcomingAppointment = () => {
     const appointment = {
-      id: "Apt0001",
-      name: "Adrian Marshall",
+      id: "Apt0002",
+      name: "Kalasnikobi Sara",
       type: "General visit",
       date: "Today, 10:45 AM",
-      image: "https://i.postimg.cc/x8rPf4MJ/image.png",
+      image: "https://i.postimg.cc/76JVykGr/image.png",
     };
   
     return (
@@ -46,15 +47,15 @@ const UpcomingAppointment = () => {
           {/* Action Section */}
           <div className="flex items-center justify-between">
             <p className="flex items-center text-sm font-medium">
-            <FaVideo className="mr-2" /> Video Appointment
+            <Hospital className="mr-2" size={18} /> CLinic Visit
             </p>
             <div className="flex space-x-2">
-              <button className="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-secondary">
+              <Link to='/doctor/appointments' className="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-secondary">
                 Chat Now
-              </button>
-              <button className="btn btn-sm bg-primary border-none text-secondary hover:bg-white hover:text-secondary">
+              </Link>
+              <Link to='appointments/treatment' className="btn btn-sm bg-primary border-none text-secondary hover:bg-white hover:text-secondary">
                 Start Appointment
-              </button>
+              </Link>
             </div>
           </div>
         </div>

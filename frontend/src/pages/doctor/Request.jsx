@@ -2,13 +2,13 @@ import { format } from "date-fns";
 import { LiaTimesCircle } from "react-icons/lia";
 import { RxCheckCircled } from "react-icons/rx";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import Swal from "sweetalert2";
 import { useState } from "react";
+import Swal from "sweetalert2";
 import { BsClockFill } from "react-icons/bs";
 import { FaPhoneAlt, FaStethoscope, FaVideo } from "react-icons/fa";
 
 const Request = () => {
-    const appointments = [
+    const [appointments, setAppointments] = useState([
         {
             id: "Apt0001",
             name: "Adrian Marshall",
@@ -94,21 +94,33 @@ const Request = () => {
             appointment: "Clinic Visit",
             image: "https://i.postimg.cc/3J6R9v7J/image.png",
         },
-    ];
+    ])
+
 
     const [showAll, setShowAll] = useState(false);
     const visibleAppointments = showAll ? appointments : appointments.slice(0, 5);
 
-    const handleAccept = () => {
+    const handleAccept = (appointmentId) => {
         Swal.fire({
-            title: "Appointment Accepted",
-            text: "You have successfully accepted the appointment.",
-            icon: "success",
+            title: "Are you sure?",
+            text: "You are about to accept this appointment.",
+            icon: "question",
+            showCancelButton: true,
             confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, accept it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Remove the appointment
+                setAppointments((prevAppointments) =>
+                    prevAppointments.filter((apt) => apt.id !== appointmentId)
+                );
+                Swal.fire("Accepted!", "The appointment has been accepted.", "success");
+            }
         });
     };
 
-    const handleReject = () => {
+    const handleReject = (appointmentId) => {
         Swal.fire({
             title: "Reject Appointment",
             text: "Please provide a reason for rejecting the appointment:",
@@ -131,6 +143,11 @@ const Request = () => {
                         text: `Reason: ${reason}`,
                         icon: "error",
                         confirmButtonColor: "#d33",
+                    }).then(() => {
+                        // Remove the appointment
+                        setAppointments((prevAppointments) =>
+                            prevAppointments.filter((apt) => apt.id !== appointmentId)
+                        );
                     });
                 } else {
                     Swal.fire({
@@ -144,28 +161,19 @@ const Request = () => {
         });
     };
 
+
     return (
-        <div className="bg-white rounded-lg shadow p-6 mx-auto" data-aos="fade-up" data-aos-duration="1000" >
+        <div className="bg-white rounded-lg shadow p-6 mx-auto" data-aos="fade-up" data-aos-duration="1000">
             {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-semibold">Appointment Requests</h3>
                 <div className="dropdown">
-                    <label
-                        tabIndex={0}
-                        className="btn btn-sm btn-outline text-secondary rounded-full"
-                    >
+                    <label tabIndex={0} className="btn btn-sm btn-outline text-secondary rounded-full">
                         today<MdOutlineKeyboardArrowDown size={25} />
                     </label>
-                    <ul
-                        tabIndex={0}
-                        className="dropdown-content menu p-1 shadow bg-base-100 rounded-box w-32"
-                    >
-                        <li>
-                            <a>Last 7 Days</a>
-                        </li>
-                        <li>
-                            <a>Last 30 Days</a>
-                        </li>
+                    <ul tabIndex={0} className="dropdown-content menu p-1 shadow bg-base-100 rounded-box w-32">
+                        <li><a>Last 7 Days</a></li>
+                        <li><a>Last 30 Days</a></li>
                     </ul>
                 </div>
             </div>
@@ -173,17 +181,10 @@ const Request = () => {
             {/* Appointment List */}
             <ul className="space-y-4">
                 {visibleAppointments.map((appointment) => (
-                    <li
-                        key={appointment.id}
-                        className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md"
-                    >
+                    <li key={appointment.id} className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md">
                         {/* Left Section */}
-                        <div className="flex  items-center space-x-4">
-                            <img
-                                src={appointment.image}
-                                alt={appointment.name}
-                                className="w-16 h-16 rounded-full ring-2 ring-gray-300"
-                            />
+                        <div className="flex items-center space-x-4">
+                            <img src={appointment.image} alt={appointment.name} className="w-16 h-16 rounded-full ring-2 ring-gray-300" />
                             <div className="text-start">
                                 <p className="text-gray-400">#{appointment.id}</p>
                                 <p className="font-medium h-font text-sm text-gray-800">{appointment.name}</p>
@@ -194,42 +195,30 @@ const Request = () => {
                                 <BsClockFill className="inline mr-1" />
                                 {format(appointment.date, "dd MMM yyyy hh:mm a")}
                             </p>
-                            <span
-                                className={`badge badge-sm text-white ${appointment.type === "General"
-                                        ? "bg-secondary"
-                                        : "bg-tertiary"
-                                    }`}
-                            >
+                            <span className={`badge badge-sm text-white ${appointment.type === "General" ? "bg-secondary" : "bg-tertiary"}`}>
                                 {appointment.type}
                             </span>
                         </div>
                         <div>
                             <p className="text-lg h-font">Type of Appointment</p>
                             <p className="text-sm text-gray-500 flex items-center">
-                                {appointment.appointment === "Audio Call" && (
-                                    <FaPhoneAlt className="mr-2 text-yellow-500" />
-                                )}
-                                {appointment.appointment === "Video Call" && (
-                                    <FaVideo className="mr-2 text-green-500" />
-                                )}
-                                {appointment.appointment === "Clinic Visit" && (
-                                    <FaStethoscope className="mr-2 text-blue-500" />
-                                )}
+                                {appointment.appointment === "Audio Call" && <FaPhoneAlt className="mr-2 text-yellow-500" />}
+                                {appointment.appointment === "Video Call" && <FaVideo className="mr-2 text-green-500" />}
+                                {appointment.appointment === "Clinic Visit" && <FaStethoscope className="mr-2 text-blue-500" />}
                                 {appointment.appointment}
                             </p>
                         </div>
-
                         {/* Action Buttons */}
                         <div className="flex items-center space-x-2">
                             <button
                                 className="text-green-500 hover:bg-green-600 hover:text-white hover:rounded-full"
-                                onClick={() => handleAccept(appointment)}
+                                onClick={() => handleAccept(appointment.id)}
                             >
                                 <RxCheckCircled size={25} />
                             </button>
                             <button
                                 className="text-red-500 hover:bg-red-600 hover:text-white hover:rounded-full"
-                                onClick={() => handleReject(appointment)}
+                                onClick={() => handleReject(appointment.id)}
                             >
                                 <LiaTimesCircle size={27} />
                             </button>
@@ -238,12 +227,11 @@ const Request = () => {
                 ))}
             </ul>
             <div className="flex justify-center mt-4">
-                <button
-                    className="btn btn-sm btn-outline text-secondary rounded-full"
-                    onClick={() => setShowAll(true)} 
-                >
-                    View All {appointments.length - 5} More
-                </button>
+                {appointments.length > 5 && !showAll && (
+                    <button className="btn btn-sm btn-outline text-secondary rounded-full" onClick={() => setShowAll(true)}>
+                        View All {appointments.length - 5} More
+                    </button>
+                )}
             </div>
         </div>
     );

@@ -109,7 +109,7 @@ const DiabetesCalendar = () => {
           return (
             <div
               key={index}
-              className={`py-4 rounded-full text-center text-sm font-medium 
+              className={`py-3 rounded-full text-center text-sm font-medium 
                 ${isCurrentMonth ? '' : 'text-gray-400'}
                 ${isSameDay(day, new Date(2023, 10, 1))
                   ? 'bg-blue-600 text-white'
