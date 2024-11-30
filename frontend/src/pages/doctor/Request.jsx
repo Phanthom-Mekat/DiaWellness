@@ -145,7 +145,7 @@ const Request = () => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow p-6 mx-auto">
+        <div className="bg-white rounded-lg shadow p-6 mx-auto" data-aos="fade-up" data-aos-duration="1000" >
             {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-semibold">Appointment Requests</h3>
@@ -240,7 +240,7 @@ const Request = () => {
             <div className="flex justify-center mt-4">
                 <button
                     className="btn btn-sm btn-outline text-secondary rounded-full"
-                    onClick={() => setShowAll(true)}
+                    onClick={() => setShowAll(true)} 
                 >
                     View All {appointments.length - 5} More
                 </button>

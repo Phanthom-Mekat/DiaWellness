@@ -82,7 +82,7 @@ const DashboardSidebar = () => {
     };
 
     return (
-        <div className="bg-blue-50 min-h-screen p-4 flex flex-col items-center shadow-md w-64 ">
+        <div className="bg-blue-50 min-h-screen p-4 flex flex-col items-center shadow-md w-64 " data-aos="fade-right">
             {/* Profile Section */}
             <div className="shadow-md bg-gradient-to-b from-primary/70 to-transparent rounded-lg p-6 w-full mb-6 text-center">
                 <div className="flex justify-center mb-4">

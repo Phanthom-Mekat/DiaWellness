@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import {  FaUserInjured } from "react-icons/fa";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import CountUp from "react-countup";
 
 const PatientDashboard = () => {
   const data = {
@@ -31,7 +32,9 @@ const PatientDashboard = () => {
       <div className="flex-grow">
         <h3 className="text-sm font-medium text-gray-500 mb-1">{title}</h3>
         <div className="flex items-center space-x-2">
-          <p className="text-xl font-bold text-gray-800">{count}</p>
+        <p className="text-xl font-bold text-gray-800">
+            <CountUp end={count} duration={7} />
+          </p>
           <span 
             className={`text-xs font-semibold ${
               isIncrease ? "text-green-600" : "text-red-600"
@@ -98,7 +101,7 @@ const PatientDashboard = () => {
       />
       <StatCard
         title="Total Invoices"
-        count={`$${data.totalInvoices.amount}`}
+        count={`${data.totalInvoices.amount}`}
         percentage={data.totalInvoices.percentage}
         isIncrease={data.totalInvoices.isIncrease}
         icon={<DotLottieReact
@@ -113,3 +116,4 @@ const PatientDashboard = () => {
 };
 
 export default PatientDashboard;
+

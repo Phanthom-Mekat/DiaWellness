@@ -14,6 +14,7 @@ import DiagnosisReport from "../components/patient/DiagnosisReport";
 import DietPlan from "../pages/Patient/DietPlan";
 import SystemDiet from "../pages/Patient/SystemDietRecommendation";
 import Prescription from "../pages/Patient/Prescription";
+import AppointmentsList from "../pages/doctor/AppointmentsList";
 
 
 const router = createBrowserRouter([
@@ -70,13 +71,14 @@ const router = createBrowserRouter([
             element: <Request/>
         },
         {
+            path: 'appointments',
+            element: <AppointmentsList/>
+        },
+        {
             path: 'profile',
             element: <div>Profile</div>
         },
-        {
-            path: 'appointments',
-            element: <div>Appointments</div>
-        },
+     
         {
             path: 'timings',
             element: <div>Timings</div>

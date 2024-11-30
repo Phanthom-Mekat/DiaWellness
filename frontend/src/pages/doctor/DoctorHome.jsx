@@ -9,21 +9,21 @@ import WeeklyOverview from "../../components/doctor/Home/WeeklyOverview";
 
 const DoctorHome = () => {
   return (
-    <div className="space-y-3 overflow-hidden ">
+    <div className="space-y-3 overflow-hidden " data-aos="fade-up">
       <PatientCount />
-      <div className="grid grid-cols-8 gap-4 ">
-        <div className="col-span-2 space-y-8">
+      <div className="grid grid-cols-8 gap-4 " >
+        <div className="col-span-2 space-y-8" data-aos="fade-up" >
           <WeeklyOverview />
           <DiabetesTypeChart/>
         </div>
-        <div className="col-span-3 space-y-6">
+        <div className="col-span-3 space-y-6" data-aos="fade-up" >
 
           <UpcomingAppointment />
           <DiabetesCalendar />
 
           <Notification />
         </div>
-        <div className="col-span-3 space-y-6">
+        <div className="col-span-3 space-y-6" data-aos="fade-up" >
         <AppointmentList />
 
           <ClinicAvailability />
