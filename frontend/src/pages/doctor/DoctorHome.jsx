@@ -22,11 +22,11 @@ const DoctorHome = () => {
 
           <UpcomingAppointment />
           <DiabetesCalendar />
+        <AppointmentList />
 
-          <Notification />
         </div>
         <div className="col-span-3 space-y-6" data-aos="fade-up" >
-        <AppointmentList />
+          <Notification />
 
           <ClinicAvailability />
 

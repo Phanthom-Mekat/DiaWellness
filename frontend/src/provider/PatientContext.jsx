@@ -15,6 +15,7 @@ export function PatientProvider({ children }) {
       name: "Kalasnikobi",
       age: 45,
       gender: "Male",
+      bloodType: "AB+",
       email: "kala@gmail.com",
       image: "https://i.postimg.cc/76JVykGr/image.png",
       heart:140,
