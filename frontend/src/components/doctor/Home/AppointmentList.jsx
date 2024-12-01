@@ -43,7 +43,7 @@ const AppointmentList = () => {
     ];
 
     return (
-        <div className="bg-white rounded-lg shadow p-4 max-w-xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-4 max-w-xl mx-auto">
             {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-semibold">Appointment</h3>

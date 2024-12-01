@@ -97,7 +97,7 @@ const WeeklyOverview = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 max-w-md mx-auto">
+    <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Weekly Overview</h3>

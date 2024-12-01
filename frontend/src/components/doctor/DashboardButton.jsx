@@ -82,7 +82,7 @@ const DashboardSidebar = () => {
     };
 
     return (
-        <div className="bg-blue-50 min-h-screen p-4 flex flex-col items-center shadow-md w-64 " data-aos="fade-right">
+        <div className="bg-blue-50 min-h-screen p-4 flex flex-col items-center shadow-xl w-64 " data-aos="fade-right">
             {/* Profile Section */}
             <div className="shadow-md bg-gradient-to-b from-primary/70 to-transparent rounded-lg p-6 w-full mb-6 text-center">
                 <div className="flex justify-center mb-4">
@@ -95,7 +95,7 @@ const DashboardSidebar = () => {
                 <h2 className="text-xl h-font font-bold text-gray-800 mb-1">Dr. Edalin Hendry</h2>
                 <p className="text-sm text-gray-600 mb-2">MBBS - Cardiologist</p>
                 <div className="mb-3 flex items-center justify-center">
-                    <span className="badge badge-primary border-none"><FaStar className="text-yellow-400 mr-2" />Specialist</span>
+                    <span className="badge bg-primary border-none"><FaStar className="text-yellow-400 mr-2" />Specialist</span>
                 </div>
 
                 <div className="mt-4">

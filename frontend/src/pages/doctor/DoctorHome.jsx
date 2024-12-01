@@ -1,3 +1,4 @@
+import VisitsFromRegions from "@/components/doctor/Home/VisitsFromRegions";
 import AppointmentList from "../../components/doctor/Home/AppointmentList";
 import ClinicAvailability from "../../components/doctor/Home/ClinicAvailability";
 import DiabetesCalendar from "../../components/doctor/Home/DiabetesCalender";
@@ -15,6 +16,7 @@ const DoctorHome = () => {
         <div className="col-span-2 space-y-8" data-aos="fade-up" >
           <WeeklyOverview />
           <DiabetesTypeChart/>
+          <VisitsFromRegions />
         </div>
         <div className="col-span-3 space-y-6" data-aos="fade-up" >
 

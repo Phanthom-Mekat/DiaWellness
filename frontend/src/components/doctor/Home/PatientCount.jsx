@@ -14,7 +14,7 @@ const PatientDashboard = () => {
 
   const StatCard = ({ title, count, percentage, isIncrease, icon }) => (
     <div 
-      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 
+      className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 
                  transform transition-all duration-300 hover:scale-105 hover:shadow-md 
                  flex items-center space-x-4 relative overflow-hidden">
       

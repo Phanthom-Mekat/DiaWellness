@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { createContext, useEffect, useState } from "react";
-
+import { Toaster } from 'react-hot-toast'
 // Create the context
 export const Context = createContext();
 
@@ -49,6 +49,7 @@ const ContextProvider = ({ children }) => {
   return (
     <Context.Provider value={info}>
       {children}
+      <Toaster position="top-center" />
     </Context.Provider>
   );
 };

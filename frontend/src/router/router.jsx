@@ -16,6 +16,7 @@ import SystemDiet from "../pages/Patient/SystemDietRecommendation";
 import Prescription from "../pages/Patient/Prescription";
 import AppointmentsList from "../pages/doctor/AppointmentsList";
 import AppointmentDetails from "@/components/doctor/appointment/AppointmentDetails";
+import AvailabilityScheduler from "@/pages/doctor/AvailabilityScheduler";
 
 
 const router = createBrowserRouter([
@@ -86,7 +87,7 @@ const router = createBrowserRouter([
      
         {
             path: 'timings',
-            element: <div>Timings</div>
+            element: <AvailabilityScheduler/>
         },
         {
             path: 'patients',
