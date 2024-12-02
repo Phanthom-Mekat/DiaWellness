@@ -24,7 +24,7 @@ const NutritionistSidebar = () => {
 
           <li>
             <NavLink
-              to="/appointments"
+              to="appointments"
               className={({ isActive }) =>
                 isActive
                   ? "flex items-center gap-3 text-teal-600 font-semibold"
@@ -38,7 +38,7 @@ const NutritionistSidebar = () => {
 
           <li>
             <NavLink
-              to="/mealplans"
+              to="mealRequest"
               className={({ isActive }) =>
                 isActive
                   ? "flex items-center gap-3 text-teal-600 font-semibold"
@@ -46,13 +46,13 @@ const NutritionistSidebar = () => {
               }
             >
               <FaUtensils className="text-lg" />
-              Meal Plans
+              Meal Request
             </NavLink>
           </li>
 
           <li>
             <NavLink
-              to="/patients"
+              to="myPatients"
               className={({ isActive }) =>
                 isActive
                   ? "flex items-center gap-3 text-teal-600 font-semibold"

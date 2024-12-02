@@ -19,6 +19,11 @@ import AppointmentDetails from "@/components/doctor/appointment/AppointmentDetai
 import AvailabilityScheduler from "@/pages/doctor/AvailabilityScheduler";
 import MyPatients from "@/pages/doctor/MyPatient";
 import SpecialtyAndServicePage from "@/pages/doctor/Speciality&ServicePage";
+import NMyPatient from "@/pages/Nutritionist/NMyPatient";
+import PatientDetails from "@/components/Nutritionist/PatientDetails";
+import NAppointments from "@/pages/Nutritionist/NAppointments";
+import NAppointmentDetails from "@/components/Nutritionist/NAppointmentDetails";
+import MealRequest from "@/pages/Nutritionist/MealRequest";
 
 
 const router = createBrowserRouter([
@@ -138,8 +143,29 @@ const router = createBrowserRouter([
         element: <NutritionistDashBoard />,
         children:[
             {
-                path:'/nutritionist',
+                path:'',
                 element:<NDashboard></NDashboard>
+            },
+            {
+                path:'myPatients',
+                element:<NMyPatient></NMyPatient>
+            },
+            {
+                path:'myPatients/:id',
+                element:<PatientDetails></PatientDetails>
+            },
+
+            {
+                path:'appointments',
+                element:<NAppointments></NAppointments>
+            },
+            {
+                path:'appointments/:id',
+                element:<NAppointmentDetails></NAppointmentDetails>
+            },
+            {
+                path:'mealRequest',
+                element:<MealRequest></MealRequest>
             }
         ]
     },
