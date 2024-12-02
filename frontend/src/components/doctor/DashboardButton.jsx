@@ -91,6 +91,7 @@ const DashboardSidebar = () => {
                         alt="Dr. Edalin Hendry"
                         className="rounded-full w-24 h-24 object-cover border-4 border-blue-200"
                     />
+                    
                 </div>
                 <h2 className="text-xl h-font font-bold text-gray-800 mb-1">Dr. Edalin Hendry</h2>
                 <p className="text-sm text-gray-600 mb-2">MBBS - Cardiologist</p>

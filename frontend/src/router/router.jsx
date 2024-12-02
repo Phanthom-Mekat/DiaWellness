@@ -18,6 +18,7 @@ import AppointmentsList from "../pages/doctor/AppointmentsList";
 import AppointmentDetails from "@/components/doctor/appointment/AppointmentDetails";
 import AvailabilityScheduler from "@/pages/doctor/AvailabilityScheduler";
 import MyPatients from "@/pages/doctor/MyPatient";
+import SpecialtyAndServicePage from "@/pages/doctor/Speciality&ServicePage";
 
 
 const router = createBrowserRouter([
@@ -99,7 +100,7 @@ const router = createBrowserRouter([
         },
         {
             path: 'services',
-            element: <div>Specialties & Services</div>
+            element: <SpecialtyAndServicePage/>
         },
         {
             path: 'reviews',
