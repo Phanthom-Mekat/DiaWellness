@@ -9,7 +9,7 @@ function SpecialtyAndServicePage() {
   }
 
   return (
-    <div>
+    <div data-aos="fade-up">
       <SpecialtyAndService onSave={handleSave} />
     </div>
   )

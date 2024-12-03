@@ -31,7 +31,7 @@ function AvailabilityScheduler() {
   })
   
   const [clinicTimeSlots, setClinicTimeSlots] = useState({
-    Monday: [...DEFAULT_SLOTS],
+    Monday:[],
     Tuesday: [],
     Wednesday: [],
     Thursday: [],
@@ -160,7 +160,7 @@ function AvailabilityScheduler() {
   )
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
+    <div className="w-full max-w-4xl mx-auto p-4" data-aos="fade-up">
       <Card>
         <CardContent className="p-6">
           <h2 className="text-2xl font-bold mb-6">Available Timings</h2>

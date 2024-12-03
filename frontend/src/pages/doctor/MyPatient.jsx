@@ -285,7 +285,7 @@ export default function MyPatients() {
     }
 
     return (
-        <div className="container mx-auto p-4 max-w-7xl">
+        <div className="container mx-auto p-4 max-w-7xl" data-aos="fade-up" data-aos-duration="1300">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">My Patients</h1>
                 <div className="relative w-64">
@@ -321,7 +321,7 @@ export default function MyPatients() {
                                 variant={"outline"}
                                 className={`w-[280px] justify-start text-left font-normal ${!dateRange && "text-muted-foreground"}`}
                             >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                <CalendarIcon className="mr-2 h-4 w-4 text-green-500 " />
                                 {dateRange?.from ? (
                                     dateRange.to ? (
                                         <>
@@ -347,7 +347,7 @@ export default function MyPatients() {
                     </Popover>
                     <Select value={filterBy} onValueChange={setFilterBy}>
                         <SelectTrigger className="w-32">
-                            <Filter className="w-4 h-4 mr-2" />
+                            <Filter className="w-4 h-4 mr-2 text-blue-500" />
                             <SelectValue placeholder="Filter By" />
                         </SelectTrigger>
                         <SelectContent>
@@ -363,12 +363,12 @@ export default function MyPatients() {
                 {displayedPatients.map((patient) => (
                     <Link to='treatment' key={patient.id}>
                         <div
-                            className="bg-card rounded-lg p-4 border hover:shadow-md transition-shadow"
+                            className="bg-card border-2 rounded-lg p-4 hover:scale-105 hover:shadow-xl transition-shadow"
                         >
                             <div className="flex items-start gap-3">
                                 <Avatar className="h-12 w-12">
                                     <AvatarImage src={patient.image} alt={patient.name} />
-                                    <AvatarFallback>{patient.name[0]}</AvatarFallback>
+                                    <AvatarFallback className="text-blue-500" >{patient.name[0]}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1">
                                     <div className="text-sm text-muted-foreground">{patient.id}</div>
@@ -382,11 +382,11 @@ export default function MyPatients() {
                             <div className="mt-4 space-y-2">
                                 <div className="bg-gray-200/80 rounded-lg p-4">
                                     <div className="flex items-center text-sm text-muted-foreground">
-                                        <CalendarIcon className="w-4 h-4 mr-2" />
+                                        <CalendarIcon className="w-4 h-4 mr-2 text-lime-500 " />
                                         {format(new Date(patient.lastAppointment), "PPp")}
                                     </div>
                                     <div className="flex items-center text-sm text-muted-foreground">
-                                        <MapPin className="w-4 h-4 mr-2" />
+                                        <MapPin className="w-4 h-4 mr-2 text-red-500" />
                                         {patient.location}
                                     </div>
                                 </div>

@@ -24,6 +24,7 @@ import PatientDetails from "@/components/Nutritionist/PatientDetails";
 import NAppointments from "@/pages/Nutritionist/NAppointments";
 import NAppointmentDetails from "@/components/Nutritionist/NAppointmentDetails";
 import MealRequest from "@/pages/Nutritionist/MealRequest";
+import MyPatientDetails from "@/components/doctor/patientdetails/MyPatientDetails";
 
 
 const router = createBrowserRouter([
@@ -97,7 +98,7 @@ const router = createBrowserRouter([
         },
         {
             path:'patients/treatment',
-            element: <AppointmentDetails/>
+            element: <MyPatientDetails/>
         },
         {
             path: 'profile',
