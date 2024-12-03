@@ -51,14 +51,14 @@ const DashboardSidebar = () => {
             path: '/doctor/accounts'
         },
         {
-            icon: <FaFileInvoice />,
-            label: 'Invoices',
-            path: '/doctor/invoices'
-        },
-        {
             icon: <FaComments />,
             label: 'Messages',
             path: '/doctor/messages'
+        },
+        {
+            icon: <FaFileInvoice />,
+            label: 'Invoices',
+            path: '/doctor/invoices'
         },
         {
             icon: <FaCogs />,

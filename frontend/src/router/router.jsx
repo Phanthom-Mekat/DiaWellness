@@ -25,6 +25,8 @@ import NAppointments from "@/pages/Nutritionist/NAppointments";
 import NAppointmentDetails from "@/components/Nutritionist/NAppointmentDetails";
 import MealRequest from "@/pages/Nutritionist/MealRequest";
 import MyPatientDetails from "@/components/doctor/patientdetails/MyPatientDetails";
+import ReviewDoctor from "@/pages/doctor/ReviewDoctor";
+import AccountsDashboard from "@/pages/doctor/AccountDashboard";
 
 
 const router = createBrowserRouter([
@@ -110,11 +112,11 @@ const router = createBrowserRouter([
         },
         {
             path: 'reviews',
-            element: <div>Reviews</div>
+            element:<ReviewDoctor/>
         },
         {
             path: 'accounts',
-            element: <div>Accounts</div>
+            element: <AccountsDashboard/>
         },
         {
             path: 'invoices',
