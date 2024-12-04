@@ -51,6 +51,11 @@ const DashboardSidebar = () => {
             path: '/doctor/accounts'
         },
         {
+            icon: <FaCogs />,
+            label: 'Profile Settings',
+            path: '/doctor/settings'
+        },
+        {
             icon: <FaComments />,
             label: 'Messages',
             path: '/doctor/messages'
@@ -60,11 +65,7 @@ const DashboardSidebar = () => {
             label: 'Invoices',
             path: '/doctor/invoices'
         },
-        {
-            icon: <FaCogs />,
-            label: 'Profile Settings',
-            path: '/doctor/settings'
-        },
+        
         {
             icon: <FaUsers />,
             label: 'Social Media',
@@ -93,7 +94,7 @@ const DashboardSidebar = () => {
                     />
                     
                 </div>
-                <h2 className="text-xl h-font font-bold text-gray-800 mb-1">Dr. Edalin Hendry</h2>
+                <h2 className="text-xl h-font font-bold text-gray-800 mb-1">Dr. Edalin Mek</h2>
                 <p className="text-sm text-gray-600 mb-2">MBBS - Cardiologist</p>
                 <div className="mb-3 flex items-center justify-center">
                     <span className="badge bg-primary border-none"><FaStar className="text-yellow-400 mr-2" />Specialist</span>

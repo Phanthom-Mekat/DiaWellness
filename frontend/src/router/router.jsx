@@ -27,6 +27,8 @@ import MealRequest from "@/pages/Nutritionist/MealRequest";
 import MyPatientDetails from "@/components/doctor/patientdetails/MyPatientDetails";
 import ReviewDoctor from "@/pages/doctor/ReviewDoctor";
 import AccountsDashboard from "@/pages/doctor/AccountDashboard";
+import DoctorForm from "@/components/doctor/DoctorForm";
+import PatientForm from "@/components/patient/PatientForm";
 
 
 const router = createBrowserRouter([
@@ -67,6 +69,10 @@ const router = createBrowserRouter([
             {
                 path: 'prescription',
                 element: <Prescription></Prescription>
+            },
+            {
+                path: 'settings',
+                element: <PatientForm/>
             }
         ]
     },
@@ -102,11 +108,7 @@ const router = createBrowserRouter([
             path:'patients/treatment',
             element: <MyPatientDetails/>
         },
-        {
-            path: 'profile',
-            element: <div>Profile</div>
-        },
-        {
+         {
             path: 'services',
             element: <SpecialtyAndServicePage/>
         },
@@ -128,7 +130,7 @@ const router = createBrowserRouter([
         },
         {
             path: 'settings',
-            element: <div>Profile Settings</div>
+            element: <DoctorForm/>
         },
         {
             path: 'social',

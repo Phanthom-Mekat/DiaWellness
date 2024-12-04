@@ -23,8 +23,8 @@ function PatientSidebar() {
       { icon: RiWalletLine, text: 'Diet Plan', path: '/patient/dietPlan' },
       { icon: RiFileTextLine, text: 'Recommendation', path: '/patient/systemDiet' },
       { icon: RiHospitalLine, text: 'Prescription', path: '/patient/prescription' },
-      { icon: RiMessage2Line, text: 'Message', path: '/patient/message' },
       { icon: RiUserSettingsLine, text: 'Profile Settings', path: '/patient/settings' },
+      { icon: RiMessage2Line, text: 'Message', path: '/patient/message' },
       
       { icon: CiLogout, text: 'Logout', path: '/' },
     ]
