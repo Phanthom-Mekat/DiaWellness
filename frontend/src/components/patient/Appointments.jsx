@@ -65,20 +65,20 @@ export default function Appointments() {
             <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
           <div className="flex items-center gap-4">
             <img
-              src={item.doctorImage}
+              src={item.DoctorPhoto}
               alt="Dr.Shanta"
               className="w-12 h-12 rounded-full object-cover"
             />
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-blue-500 text-sm">{item.appointmentID}</span>
-                <h3 className="font-medium">{item.doctorName}</h3>
+                <span className="text-blue-500 text-sm">{item.AppointmentID}</span>
+                <h3 className="font-medium">{item.DoctorName}</h3>
                 {/* <span className="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded-full">New</span> */}
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span>General Visit</span>
                 <span>•</span>
-                <span>Video Call</span>
+                <span>{item.VisitType}</span>
               </div>
             </div>
           </div>
@@ -87,9 +87,9 @@ export default function Appointments() {
             <div className="text-right">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-gray-400" />
-                <span>{item.appointmentDate}</span>
+                <span>{item.DoctorSchedule}</span>
               </div>
-              <a href="mailto:shanta@example.com" className="text-sm text-gray-500">{item.doctorEmail}</a>
+              <a href="mailto:shanta@example.com" className="text-sm text-gray-500">{item.DoctorEmail}</a>
               <div className="text-sm text-gray-500">{item.doctorPhone}</div>
             </div>
 

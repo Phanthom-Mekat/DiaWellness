@@ -193,7 +193,7 @@ export default function PatientDashboard() {
               {doctors.map((doctor, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img src={doctor.Images} alt="" className="w-10 h-10 rounded-full object-cover" />
+                    <img src={doctor.Photo} alt="" className="w-10 h-10 rounded-full object-cover" />
                     <div>
                       <p className="font-medium">{doctor.Name}</p>
                       <p className="text-sm text-gray-600">{doctor.Speciality}</p>
