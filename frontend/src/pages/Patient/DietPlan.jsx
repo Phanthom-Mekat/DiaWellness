@@ -3,15 +3,13 @@ import {
   Apple, 
   Coffee, 
   Utensils, 
-  Salad,
   Moon,
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
   Clock,
   Info,
-  CheckCircle2,
-  AlertCircle
+  CheckCircle2
 } from 'lucide-react';
 
 export default function DietPlan() {
@@ -65,9 +63,8 @@ export default function DietPlan() {
 
   const formatDate = (date) => {
     return new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
+      weekday: 'short',
+      month: 'short',
       day: 'numeric'
     }).format(date);
   };
@@ -82,89 +79,89 @@ export default function DietPlan() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="w-full mx-auto">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div className="min-h-screen bg-gray-50 py-2 px-2 sm:py-4 sm:px-6">
+      <div className="w-full max-w-md mx-auto">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-600">
-            <h1 className="text-2xl font-bold text-white">Your Personalized Diet Plan</h1>
-            <p className="text-green-50 mt-1">
-              Customized nutrition plan by your nutritionist
+          <div className="px-3 py-3 bg-gradient-to-r from-green-500 to-emerald-600">
+            <h1 className="text-lg sm:text-xl font-bold text-white">Your Diet Plan</h1>
+            <p className="text-green-50 text-xs sm:text-sm">
+              Nutrition plan by your nutritionist
             </p>
           </div>
 
           {/* Date Navigation */}
-          <div className="border-b px-6 py-4">
+          <div className="border-b px-3 py-2">
             <div className="flex items-center justify-between">
               <button 
                 onClick={() => setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() - 1)))}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className="w-4 h-4 text-gray-600" />
               </button>
-              <div className="flex items-center space-x-2">
-                <CalendarIcon className="w-5 h-5 text-green-500" />
-                <span className="text-lg font-medium">{formatDate(selectedDate)}</span>
+              <div className="flex items-center space-x-1">
+                <CalendarIcon className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
+                <span className="text-xs sm:text-sm font-medium">{formatDate(selectedDate)}</span>
               </div>
               <button 
                 onClick={() => setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() + 1)))}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className="w-4 h-4 text-gray-600" />
               </button>
             </div>
           </div>
 
           {/* Meal Navigation */}
-          <div className="grid grid-cols-4 gap-4 p-4 border-b">
+          <div className="grid grid-cols-4 gap-1 p-2 border-b">
             {Object.entries(mealIcons).map(([meal, Icon]) => (
               <button
                 key={meal}
                 onClick={() => setSelectedMeal(meal)}
-                className={`flex flex-col items-center p-4 rounded-lg transition-colors ${
+                className={`flex flex-col items-center p-1 sm:p-2 rounded-md transition-colors ${
                   selectedMeal === meal 
                     ? 'bg-green-50 text-green-600' 
                     : 'hover:bg-gray-50 text-gray-600'
                 }`}
               >
-                <Icon className="w-6 h-6 mb-2" />
-                <span className="capitalize text-sm font-medium">{meal}</span>
+                <Icon className="w-4 h-4 mb-1" />
+                <span className="capitalize text-xs font-medium">{meal}</span>
               </button>
             ))}
           </div>
 
           {/* Meal Details */}
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <Clock className="w-5 h-5 text-green-500" />
-                <span className="text-gray-600">Recommended Time: {dietPlan[selectedMeal].time}</span>
+          <div className="p-3">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-1">
+                <Clock className="w-3 h-3 text-green-500" />
+                <span className="text-xs text-gray-600">{dietPlan[selectedMeal].time}</span>
               </div>
-              <div className="flex items-center space-x-2 text-green-600">
-                <CheckCircle2 className="w-5 h-5" />
-                <span className="text-sm font-medium">Nutritionist Approved</span>
+              <div className="flex items-center space-x-1 text-green-600">
+                <CheckCircle2 className="w-3 h-3" />
+                <span className="text-xs">Nutritionist Approved</span>
               </div>
             </div>
 
             {/* Food Items */}
-            <div className="space-y-4 mb-6">
+            <div className="space-y-2 mb-3">
               {dietPlan[selectedMeal].items.map((item, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-gray-900">{item.name}</h3>
-                    <span className="text-green-600 font-medium">{item.calories} cal</span>
+                <div key={index} className="bg-gray-50 rounded-md p-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-medium text-xs text-gray-900">{item.name}</h3>
+                    <span className="text-green-600 font-medium text-xs">{item.calories} cal</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
+                  <div className="grid grid-cols-3 gap-1 text-xs text-gray-600">
                     <div className="flex items-center space-x-1">
-                      <span className="font-medium">Protein:</span>
+                      <span className="font-medium">Pro:</span>
                       <span>{item.protein}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <span className="font-medium">Carbs:</span>
+                      <span className="font-medium">Carb:</span>
                       <span>{item.carbs}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <span className="font-medium">Fats:</span>
+                      <span className="font-medium">Fat:</span>
                       <span>{item.fats}</span>
                     </div>
                   </div>
@@ -173,13 +170,13 @@ export default function DietPlan() {
             </div>
 
             {/* Nutritional Summary */}
-            <div className="bg-green-50 rounded-lg p-4 mb-6">
-              <h3 className="font-medium text-green-800 mb-3">Meal Summary</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-green-50 rounded-md p-2 mb-3">
+              <h3 className="font-medium text-xs text-green-800 mb-1">Meal Summary</h3>
+              <div className="grid grid-cols-4 gap-1">
                 {Object.entries(getTotalNutrition(dietPlan[selectedMeal].items)).map(([key, value]) => (
                   <div key={key} className="text-center">
-                    <div className="text-sm text-green-600 font-medium capitalize">{key}</div>
-                    <div className="text-lg font-semibold text-gray-900">
+                    <div className="text-xs text-green-600 font-medium capitalize">{key.substring(0, 4)}</div>
+                    <div className="text-xs font-semibold text-gray-900">
                       {typeof value === 'number' ? value.toFixed(0) : value.toFixed(1)}
                       {key !== 'calories' ? 'g' : ''}
                     </div>
@@ -189,11 +186,11 @@ export default function DietPlan() {
             </div>
 
             {/* Notes */}
-            <div className="flex items-start space-x-3 text-gray-600 bg-blue-50 p-4 rounded-lg">
-              <Info className="w-5 h-5 text-blue-500 mt-0.5" />
+            <div className="flex items-start space-x-2 text-gray-600 bg-blue-50 p-2 rounded-md">
+              <Info className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-blue-800 mb-1">Nutritionist's Notes</h4>
-                <p className="text-sm">{dietPlan[selectedMeal].notes}</p>
+                <h4 className="font-medium text-xs text-blue-800">Notes</h4>
+                <p className="text-xs">{dietPlan[selectedMeal].notes}</p>
               </div>
             </div>
           </div>

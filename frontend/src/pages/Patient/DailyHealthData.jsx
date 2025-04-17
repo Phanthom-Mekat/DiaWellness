@@ -119,32 +119,32 @@ export default function DailyHealthData() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div className="min-h-screen bg-gray-50 py-4 px-3 sm:py-6 sm:px-4 md:py-8 md:px-6">
+      <div className="max-w-xl md:max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600">
-            <h1 className="text-2xl font-bold text-white">Daily Health Tracker</h1>
-            <p className="text-blue-100 mt-1">Record your daily health metrics</p>
+          <div className="px-4 py-3 sm:px-5 sm:py-4 bg-gradient-to-r from-blue-500 to-blue-600">
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Daily Health Tracker</h1>
+            <p className="text-blue-100 text-sm mt-1">Record your daily health metrics</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6">
+          <form onSubmit={handleSubmit} className="p-3 sm:p-4 md:p-6">
             {/* Main Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
               {metrics.map((metric) => (
                 <div key={metric.label} className="relative group">
-                  <div className="absolute -right-2 -top-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="bg-gray-800 text-white text-xs rounded-lg py-1 px-2 max-w-xs">
+                  <div className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <div className="bg-gray-800 text-white text-xs rounded py-1 px-2 max-w-xs">
                       {metric.info}
                     </div>
                   </div>
-                  <div className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-gray-700 font-medium flex items-center">
-                        <metric.icon className={`w-5 h-5 ${metric.color} mr-2`} />
+                  <div className="bg-white p-3 rounded border border-gray-200 hover:border-blue-500 transition-colors">
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <label className="text-gray-700 text-sm sm:text-base font-medium flex items-center">
+                        <metric.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${metric.color} mr-1 sm:mr-2`} />
                         {metric.label}
                       </label>
-                      <AlertCircle className="w-4 h-4 text-gray-400 cursor-help" />
+                      <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 cursor-help" />
                     </div>
                     <div className="flex items-center space-x-2">
                       <input
@@ -156,12 +156,12 @@ export default function DailyHealthData() {
                           [metric.name]: e.target.value
                         }))}
                         placeholder={metric.placeholder}
-                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="block w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                         min={metric.min}
                         max={metric.max}
                         step={metric.step}
                       />
-                      <span className="text-gray-500 text-sm whitespace-nowrap">{metric.unit}</span>
+                      <span className="text-gray-500 text-xs sm:text-sm whitespace-nowrap">{metric.unit}</span>
                     </div>
                   </div>
                 </div>
@@ -169,13 +169,13 @@ export default function DailyHealthData() {
             </div>
 
             {/* Blood Pressure Section */}
-            <div className="mb-8">
-              <div className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-colors">
-                <label className="text-gray-700 font-medium flex items-center mb-2">
-                  <Activity className="w-5 h-5 text-green-500 mr-2" />
+            <div className="mb-4 sm:mb-6">
+              <div className="bg-white p-3 sm:p-4 rounded border border-gray-200 hover:border-blue-500 transition-colors">
+                <label className="text-gray-700 text-sm sm:text-base font-medium flex items-center mb-1 sm:mb-2">
+                  <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2" />
                   Blood Pressure
                 </label>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 sm:space-x-4">
                   <div className="flex-1">
                     <input
                       type="number"
@@ -187,8 +187,8 @@ export default function DailyHealthData() {
                           systolic: e.target.value
                         }
                       }))}
-                      placeholder="Systolic (90-120)"
-                      className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Systolic"
+                      className="block w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                       min="70"
                       max="200"
                     />
@@ -205,25 +205,25 @@ export default function DailyHealthData() {
                           diastolic: e.target.value
                         }
                       }))}
-                      placeholder="Diastolic (60-80)"
-                      className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Diastolic"
+                      className="block w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                       min="40"
                       max="130"
                     />
                   </div>
-                  <span className="text-gray-500 text-sm whitespace-nowrap">mmHg</span>
+                  <span className="text-gray-500 text-xs sm:text-sm whitespace-nowrap">mmHg</span>
                 </div>
               </div>
             </div>
 
             {/* BMI Calculator Section */}
-            <div className="mb-8">
-              <div className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-colors">
-                <label className="text-gray-700 font-medium flex items-center mb-2">
-                  <Scale className="w-5 h-5 text-indigo-500 mr-2" />
+            <div className="mb-4 sm:mb-6">
+              <div className="bg-white p-3 sm:p-4 rounded border border-gray-200 hover:border-blue-500 transition-colors">
+                <label className="text-gray-700 text-sm sm:text-base font-medium flex items-center mb-1 sm:mb-2">
+                  <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 mr-1 sm:mr-2" />
                   BMI Calculator
                 </label>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4">
                   <div>
                     <input
                       type="number"
@@ -233,7 +233,7 @@ export default function DailyHealthData() {
                         weight: e.target.value
                       }))}
                       placeholder="Weight (kg)"
-                      className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="block w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                       min="20"
                       max="300"
                     />
@@ -247,7 +247,7 @@ export default function DailyHealthData() {
                         height: e.target.value
                       }))}
                       placeholder="Height (cm)"
-                      className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="block w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                       min="100"
                       max="250"
                     />
@@ -255,8 +255,8 @@ export default function DailyHealthData() {
                 </div>
                 {calculateBMI() && (
                   <div className="mt-2 text-center">
-                    <span className="text-gray-600">Your BMI: </span>
-                    <span className={`font-semibold ${getBMICategory(calculateBMI()).color}`}>
+                    <span className="text-gray-600 text-sm">Your BMI: </span>
+                    <span className={`font-semibold ${getBMICategory(calculateBMI()).color} text-sm sm:text-base`}>
                       {calculateBMI()} ({getBMICategory(calculateBMI()).label})
                     </span>
                   </div>
@@ -265,24 +265,24 @@ export default function DailyHealthData() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end space-x-4">
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-4">
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center"
+                className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center sm:justify-start text-sm"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Reset
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors flex items-center justify-center sm:justify-start disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {loading ? (
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
                 ) : (
-                  <Save className="w-4 h-4 mr-2" />
+                  <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 )}
                 Save Data
               </button>
