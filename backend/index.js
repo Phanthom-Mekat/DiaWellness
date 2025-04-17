@@ -120,20 +120,66 @@ app.get('/doctors', (req, res) => {
 // });
 
 
+// app.post('/appointments', (req, res) => {
+//     // Extract required data from request body
+//     const { DoctorID } = req.body;
+
+//     // Validate input
+//     if (!DoctorID) {
+//         return res.status(400).json({ 
+//             error: 'DoctorID is required' 
+//         });
+//     }
+
+//     // Define Visit Type (since you mentioned giving some value)
+//     const visitType = 'Regular Checkup';
+//     const PatientID = 100000;
+
+//     // SQL query to insert appointment
+//     const insertAppointmentQuery = `
+//         INSERT INTO tbl_appointment 
+//         (DoctorID, PatientID, \`Visit Type\`) 
+//         VALUES (?, ?, ?)`;
+
+//     // Execute insert query
+//     db.query(
+//         insertAppointmentQuery, 
+//         [DoctorID, PatientID, visitType], 
+//         (insertErr, result) => {
+//             if (insertErr) {
+//                 console.error('Appointment insertion error:', insertErr);
+//                 return res.status(500).json({ 
+//                     error: 'Failed to create appointment',
+//                     details: insertErr.message 
+//                 });
+//             }
+
+//             // Successful insertion
+//             res.status(201).json({
+//                 message: 'Appointment created successfully',
+//                 appointmentId: result.insertId,
+//                 doctorId: DoctorID,
+//                 patientId: PatientID,
+//                 visitType: visitType
+//             });
+//         }
+//     );
+// });
+
 app.post('/appointments', (req, res) => {
     // Extract required data from request body
     const { DoctorID } = req.body;
 
-    // Validate input
+    // Validate inputs
     if (!DoctorID) {
-        return res.status(400).json({ 
-            error: 'DoctorID is required' 
-        });
+        return res.status(400).json({ error: 'DoctorID is required' });
     }
-
-    // Define Visit Type (since you mentioned giving some value)
-    const visitType = 'Regular Checkup';
+  
+    
     const PatientID = 100000;
+
+    // Define VisitType if not provided in the request
+    const visitType = 'Regular Checkup';
 
     // SQL query to insert appointment
     const insertAppointmentQuery = `
@@ -143,8 +189,8 @@ app.post('/appointments', (req, res) => {
 
     // Execute insert query
     db.query(
-        insertAppointmentQuery, 
-        [DoctorID, PatientID, visitType], 
+        insertAppointmentQuery,
+        [DoctorID, PatientID, visitType],
         (insertErr, result) => {
             if (insertErr) {
                 console.error('Appointment insertion error:', insertErr);
@@ -166,14 +212,19 @@ app.post('/appointments', (req, res) => {
     );
 });
 
+
+
+
+
 app.get('/appointments', (req, res) => {
-    // Updated SQL query with exact column names
+    // Updated SQL query with Photo included
     const getAppointmentsQuery = `
         SELECT 
             a.Appointment_ID AS AppointmentID,
             d.Name AS DoctorName,
             d.Schedule AS DoctorSchedule,
             d.Email AS DoctorEmail,
+            d.Photo AS DoctorPhoto,  -- Added DoctorPhoto
             a.\`Visit Type\` AS VisitType
         FROM 
             tbl_appointment a
@@ -202,7 +253,6 @@ app.get('/appointments', (req, res) => {
         res.json(results);
     });
 });
-
 
 
 

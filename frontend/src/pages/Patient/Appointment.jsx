@@ -33,7 +33,7 @@ export default function CreateAppointment() {
             headers: {
               'content-type' : 'application/json'
             },
-            body: JSON.stringify({id})
+            body: JSON.stringify({ DoctorID: id })
           })
           .then(res=>res.json())
           .then(data => {
@@ -77,7 +77,7 @@ export default function CreateAppointment() {
               </button>
               <div className="flex flex-col items-center mb-4">
                 <img
-                  src={doctor.Images}
+                  src={doctor.Photo}
                   alt={doctor.Name}
                   className="w-24 h-24 rounded-full object-cover mb-3"
                 />
@@ -113,7 +113,7 @@ export default function CreateAppointment() {
                 <div className="flex items-center text-gray-600">
                   <Calendar className="w-4 h-4 mr-2" />
                   <span className="text-sm">
-                    Next Availability : {doctor.nextAvailable}
+                    Next Availability : {doctor.Schedule}
                   </span>
                 </div>
                 <div className="flex items-center text-gray-600">
@@ -130,7 +130,7 @@ export default function CreateAppointment() {
                 <button className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                   View Profile
                 </button>
-                <button onClick={()=>handleBookNow(doctor.DoctorID)} className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                <button onClick={()=>handleBookNow(doctor.ID)} className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                   Book Now
                 </button>
               </div>
