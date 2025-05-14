@@ -3,6 +3,9 @@ const app = express();
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mysql = require("mysql");
+const multer = require("multer");
+const fs = require("fs");
+
 dotenv.config();    
 const port = process.env.PORT || 5000;
 
@@ -10,20 +13,12 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// const db = mysql.createConnection({
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-//     database: process.env.DB,
-// });
-
 // Samin DB
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'dbms_project',
-    // database: 'dbms_project'
 });
 
 db.connect((err) => {
@@ -34,7 +29,28 @@ db.connect((err) => {
     console.log('Connected to MySQL database');
 });
 
+// Configure multer storage for in-memory file storage
+const storage = multer.memoryStorage(); // Store files in memory for database insertion
 
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: function (req, file, cb) {
+        // Accept only PDFs and images
+        if (
+            file.mimetype === "application/pdf" ||
+            file.mimetype === "image/png" ||
+            file.mimetype === "image/jpg" ||
+            file.mimetype === "image/jpeg"
+        ) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only PDF, PNG, JPG, and JPEG files are allowed!"), false);
+        }
+    }
+});
+
+// Existing routes...
 app.get('/doctors', (req, res) => {
     const sql = 'SELECT * FROM tbl_doctor';
     db.query(sql, (err, data) => {
@@ -46,126 +62,6 @@ app.get('/doctors', (req, res) => {
     });
 });
 
-// app.get('/appointments', (req, res) => {
-//     const sql = `
-//         SELECT 
-//             a.AppointmentID AS appointmentID,
-//             d.Name AS doctorName,
-//             a.Time AS appointmentTime,
-//             h.Email AS doctorEmail,
-//             h.PhoneNumber AS doctorPhone,
-//             d.Images AS doctorImage,
-//             a.Date AS appointmentDate
-//         FROM 
-//             tbl_appointment a
-//         JOIN 
-//             tbl_doctor d ON a.DoctorID = d.DoctorID
-//         JOIN 
-//             tbl_healthcare_professionals h ON d.DoctorID = h.ID;
-//     `;
-
-//     db.query(sql, (err, results) => {
-//         if (err) {
-//             console.error('Query error:', err.message);
-//             return res.status(500).json({ error: 'Database query failed', details: err.message });
-//         }
-//         res.json(results);
-//     });
-// });
-
-
-// adding to appointment table
-
-// app.post('/appointments', (req, res) => {
-//     const { id: doctorID } = req.body; // Extract doctorID from the request body
-
-//     if (!doctorID) {
-//         return res.status(400).json({ error: 'Doctor ID is required' });
-//     }
-
-//     // Prepare static and dynamic data
-//     // Fixed for now
-//     const patientID = 20000001; // Static patient ID for now
-//     const randomDate = new Date(); // Generate a current random date
-//     randomDate.setDate(randomDate.getDate() + Math.floor(Math.random() * 10)); // Random date within 10 days
-//     const appointmentDate = randomDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-//     const appointmentTime = `${Math.floor(Math.random() * 12 + 1)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')} ${Math.random() > 0.5 ? 'AM' : 'PM'}`; // Random time
-
-//     // SQL query for inserting into tbl_appointment
-//     const sql = `
-//         INSERT INTO tbl_appointment ( Time, Date, DoctorID, PatientID)
-//         VALUES ( ?, ?, ?, ?)
-//     `;
-
-//     const values = [ appointmentTime, appointmentDate, doctorID, patientID];
-
-//     // Execute the query
-//     db.query(sql, values, (err, result) => {
-//         if (err) {
-//             console.error('Database error:', err);
-//             return res.status(500).json({ error: 'Failed to insert appointment' });
-//         }
-
-//         console.log('Inserted appointment:', result);
-
-//         res.status(201).json({
-//             message: 'Appointment successfully created',
-            
-//             time: appointmentTime,
-//             date: appointmentDate,
-//             doctorID,
-//             patientID,
-//         });
-//     });
-// });
-
-
-// app.post('/appointments', (req, res) => {
-//     // Extract required data from request body
-//     const { DoctorID } = req.body;
-
-//     // Validate input
-//     if (!DoctorID) {
-//         return res.status(400).json({ 
-//             error: 'DoctorID is required' 
-//         });
-//     }
-
-//     // Define Visit Type (since you mentioned giving some value)
-//     const visitType = 'Regular Checkup';
-//     const PatientID = 100000;
-
-//     // SQL query to insert appointment
-//     const insertAppointmentQuery = `
-//         INSERT INTO tbl_appointment 
-//         (DoctorID, PatientID, \`Visit Type\`) 
-//         VALUES (?, ?, ?)`;
-
-//     // Execute insert query
-//     db.query(
-//         insertAppointmentQuery, 
-//         [DoctorID, PatientID, visitType], 
-//         (insertErr, result) => {
-//             if (insertErr) {
-//                 console.error('Appointment insertion error:', insertErr);
-//                 return res.status(500).json({ 
-//                     error: 'Failed to create appointment',
-//                     details: insertErr.message 
-//                 });
-//             }
-
-//             // Successful insertion
-//             res.status(201).json({
-//                 message: 'Appointment created successfully',
-//                 appointmentId: result.insertId,
-//                 doctorId: DoctorID,
-//                 patientId: PatientID,
-//                 visitType: visitType
-//             });
-//         }
-//     );
-// });
-
 app.post('/appointments', (req, res) => {
     // Extract required data from request body
     const { DoctorID } = req.body;
@@ -175,7 +71,6 @@ app.post('/appointments', (req, res) => {
         return res.status(400).json({ error: 'DoctorID is required' });
     }
   
-    
     const PatientID = 100000;
 
     // Define VisitType if not provided in the request
@@ -212,10 +107,6 @@ app.post('/appointments', (req, res) => {
     );
 });
 
-
-
-
-
 app.get('/appointments', (req, res) => {
     // Updated SQL query with Photo included
     const getAppointmentsQuery = `
@@ -224,7 +115,7 @@ app.get('/appointments', (req, res) => {
             d.Name AS DoctorName,
             d.Schedule AS DoctorSchedule,
             d.Email AS DoctorEmail,
-            d.Photo AS DoctorPhoto,  -- Added DoctorPhoto
+            d.Photo AS DoctorPhoto,
             a.\`Visit Type\` AS VisitType
         FROM 
             tbl_appointment a
@@ -254,7 +145,7 @@ app.get('/appointments', (req, res) => {
     });
 });
 
-// Add this near your other POST endpoints
+// Health data endpoints
 app.post('/health-data', (req, res) => {
     const { 
         patientId,
@@ -307,7 +198,6 @@ app.post('/health-data', (req, res) => {
     );
 });
 
-// Get latest health data for a patient
 app.get('/health-data/latest', (req, res) => {
     const { patientId } = req.query;
 
@@ -349,7 +239,6 @@ app.get('/health-data/latest', (req, res) => {
     });
 });
 
-// Get health data history (optional - for analytics)
 app.get('/health-data/history', (req, res) => {
     const { patientId, limit = 7 } = req.query;
 
@@ -385,10 +274,261 @@ app.get('/health-data/history', (req, res) => {
     });
 });
 
+// NEW API ENDPOINTS FOR MEDICAL REPORTS
+
+// 1. POST endpoint for uploading medical reports
+app.post('/api/reports/upload', upload.array('files', 5), (req, res) => {
+    try {
+        const files = req.files;
+        const { date, type, doctor, description, patientId } = req.body;
+        
+        if (!files || files.length === 0) {
+            return res.status(400).json({ error: 'No files uploaded' });
+        }
+        
+        if (!date || !type || !patientId) {
+            return res.status(400).json({ error: 'Required fields missing' });
+        }
+        
+        // Since we can store multiple files in the frontend but the table structure has one file per record,
+        // we need to process each file separately
+        const filePromises = files.map(file => {
+            return new Promise((resolve, reject) => {
+                // Insert each file as a separate report record
+                const insertQuery = `
+                    INSERT INTO tbl_medical_reports 
+                    (PatientID, ReportDate, DoctorName, ReportType, Description, FileData, FileName, FileType, FileSize) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `;
+                
+                const fileData = file.buffer; // Get file data from memory
+                const fileExt = file.originalname.split('.').pop().toLowerCase();
+                
+                db.query(
+                    insertQuery, 
+                    [
+                        patientId, 
+                        date, 
+                        doctor || 'Not Specified', 
+                        type, 
+                        description || '', 
+                        fileData,
+                        file.originalname,
+                        fileExt,
+                        file.size
+                    ], 
+                    (err, result) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(result.insertId);
+                    }
+                );
+            });
+        });
+        
+        // Wait for all file insertions to complete
+        Promise.all(filePromises)
+            .then(reportIds => {
+                res.status(201).json({
+                    message: 'Reports uploaded successfully',
+                    reportIds: reportIds,
+                    count: reportIds.length
+                });
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                res.status(500).json({ 
+                    error: 'Failed to upload reports', 
+                    details: error.message 
+                });
+            });
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ 
+            error: 'Failed to upload reports', 
+            details: error.message 
+        });
+    }
+});
+
+// 2. GET endpoint for retrieving medical reports for a patient (metadata only)
+app.get('/api/reports', (req, res) => {
+    const { patientId } = req.query;
+    
+    if (!patientId) {
+        return res.status(400).json({ error: 'Patient ID is required' });
+    }
+    
+    // Query to get reports without file data to reduce response size
+    const query = `
+        SELECT 
+            ReportID,
+            PatientID,
+            ReportDate,
+            DoctorName,
+            ReportType,
+            Description,
+            FileName,
+            FileType,
+            FileSize,
+            UploadDate
+        FROM 
+            tbl_medical_reports
+        WHERE 
+            PatientID = ?
+        ORDER BY 
+            ReportDate DESC, UploadDate DESC
+    `;
+    
+    db.query(query, [patientId], (err, results) => {
+        if (err) {
+            console.error('Reports fetch error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to retrieve reports', 
+                details: err.message 
+            });
+        }
+        
+        res.json(results);
+    });
+});
+
+// 3. GET endpoint for retrieving a single report with file data
+app.get('/api/reports/:id', (req, res) => {
+    const reportId = req.params.id;
+    
+    if (!reportId) {
+        return res.status(400).json({ error: 'Report ID is required' });
+    }
+    
+    const query = `
+        SELECT 
+            ReportID,
+            PatientID,
+            ReportDate,
+            DoctorName,
+            ReportType,
+            Description,
+            FileData,
+            FileName,
+            FileType,
+            FileSize,
+            UploadDate
+        FROM 
+            tbl_medical_reports
+        WHERE 
+            ReportID = ?
+    `;
+    
+    db.query(query, [reportId], (err, results) => {
+        if (err) {
+            console.error('Report fetch error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to retrieve report', 
+                details: err.message 
+            });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Report not found' });
+        }
+        
+        // Convert binary data to base64 for sending to client
+        const report = results[0];
+        
+        // Send file data as base64
+        report.FileData = report.FileData.toString('base64');
+        
+        res.json(report);
+    });
+});
+
+// 4. GET endpoint for downloading file data as a file
+app.get('/api/reports/:id/download', (req, res) => {
+    const reportId = req.params.id;
+    
+    if (!reportId) {
+        return res.status(400).json({ error: 'Report ID is required' });
+    }
+    
+    const query = `
+        SELECT 
+            FileData,
+            FileName,
+            FileType
+        FROM 
+            tbl_medical_reports
+        WHERE 
+            ReportID = ?
+    `;
+    
+    db.query(query, [reportId], (err, results) => {
+        if (err) {
+            console.error('Report fetch error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to retrieve report', 
+                details: err.message 
+            });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Report not found' });
+        }
+        
+        const report = results[0];
+        const fileData = report.FileData;
+        const fileName = report.FileName;
+        
+        // Set Content-Type based on file type
+        let contentType = 'application/octet-stream'; // Default binary
+        if (report.FileType === 'pdf') {
+            contentType = 'application/pdf';
+        } else if (['jpg', 'jpeg', 'png'].includes(report.FileType.toLowerCase())) {
+            contentType = `image/${report.FileType.toLowerCase()}`;
+        }
+        
+        // Set headers for file download
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Type', contentType);
+        
+        // Send the binary file data
+        res.send(fileData);
+    });
+});
+
+// 5. DELETE endpoint for removing reports
+app.delete('/api/reports/:id', (req, res) => {
+    const reportId = req.params.id;
+    
+    if (!reportId) {
+        return res.status(400).json({ error: 'Report ID is required' });
+    }
+    
+    const deleteQuery = `DELETE FROM tbl_medical_reports WHERE ReportID = ?`;
+    
+    db.query(deleteQuery, [reportId], (err, result) => {
+        if (err) {
+            console.error('Report deletion error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to delete report', 
+                details: err.message 
+            });
+        }
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Report not found' });
+        }
+        
+        res.json({ message: 'Report deleted successfully' });
+    });
+});
+
 app.get("/", (req, res) => {
     res.send("Hello from backend");
-})
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
-})
+});
