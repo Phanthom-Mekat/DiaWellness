@@ -254,7 +254,136 @@ app.get('/appointments', (req, res) => {
     });
 });
 
+// Add this near your other POST endpoints
+app.post('/health-data', (req, res) => {
+    const { 
+        patientId,
+        heartRate, 
+        temperature, 
+        glucoseLevel, 
+        spo2, 
+        bloodPressureSystolic, 
+        bloodPressureDiastolic 
+    } = req.body;
 
+    // Validate required fields
+    if (!patientId) {
+        return res.status(400).json({ error: 'Patient ID is required' });
+    }
+
+    // Prepare SQL query
+    const insertQuery = `
+        INSERT INTO tbl_patient_health_data 
+        (PatientID, HeartRate, BodyTemperature, GlucoseLevel, SpO2, BloodPressureSystolic, BloodPressureDiastolic, UpdatedBy)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'patient')
+    `;
+
+    // Execute query
+    db.query(
+        insertQuery,
+        [
+            patientId,
+            heartRate || null,
+            temperature || null,
+            glucoseLevel || null,
+            spo2 || null,
+            bloodPressureSystolic || null,
+            bloodPressureDiastolic || null
+        ],
+        (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ 
+                    error: 'Failed to save health data',
+                    details: err.message 
+                });
+            }
+
+            res.status(201).json({
+                message: 'Health data saved successfully',
+                recordId: result.insertId
+            });
+        }
+    );
+});
+
+// Get latest health data for a patient
+app.get('/health-data/latest', (req, res) => {
+    const { patientId } = req.query;
+
+    if (!patientId) {
+        return res.status(400).json({ error: 'Patient ID is required' });
+    }
+
+    const sql = `
+        SELECT 
+            HeartRate, 
+            BodyTemperature, 
+            GlucoseLevel, 
+            SpO2, 
+            BloodPressureSystolic, 
+            BloodPressureDiastolic,
+            Date
+        FROM tbl_patient_health_data
+        WHERE PatientID = ?
+        ORDER BY Date DESC, LastUpdated DESC
+        LIMIT 1
+    `;
+
+    db.query(sql, [patientId], (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to fetch health data',
+                details: err.message 
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ 
+                message: 'No health data found for this patient' 
+            });
+        }
+
+        res.json(results[0]);
+    });
+});
+
+// Get health data history (optional - for analytics)
+app.get('/health-data/history', (req, res) => {
+    const { patientId, limit = 7 } = req.query;
+
+    if (!patientId) {
+        return res.status(400).json({ error: 'Patient ID is required' });
+    }
+
+    const sql = `
+        SELECT 
+            HeartRate, 
+            BodyTemperature, 
+            GlucoseLevel, 
+            SpO2, 
+            BloodPressureSystolic, 
+            BloodPressureDiastolic,
+            Date
+        FROM tbl_patient_health_data
+        WHERE PatientID = ?
+        ORDER BY Date DESC
+        LIMIT ?
+    `;
+
+    db.query(sql, [patientId, parseInt(limit)], (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to fetch health data history',
+                details: err.message 
+            });
+        }
+
+        res.json(results);
+    });
+});
 
 app.get("/", (req, res) => {
     res.send("Hello from backend");
