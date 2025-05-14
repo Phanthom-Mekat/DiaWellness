@@ -3,6 +3,7 @@ import { Heart, Thermometer, Activity, Scale, Droplets, Save, RefreshCw, AlertCi
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaLungs } from "react-icons/fa";
+import axios from 'axios';
 
 export default function DailyHealthData() {
   const [formData, setFormData] = useState({
@@ -36,16 +37,42 @@ export default function DailyHealthData() {
     return { label: 'Obese', color: 'text-red-500' };
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+ // Update the handleSubmit function
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      toast.success('Health data saved successfully!');
-      setLoading(false);
-    }, 1200);
-  };
+  try {
+    // Prepare the data to send
+    const healthData = {
+      patientId: 100000, // Replace with actual patient ID from your auth system
+      heartRate: formData.heartRate,
+      temperature: formData.temperature,
+      glucoseLevel: formData.glucoseLevel,
+      spo2: formData.spo2,
+      bloodPressureSystolic: formData.bloodPressure.systolic,
+      bloodPressureDiastolic: formData.bloodPressure.diastolic
+    };
+
+    // Remove empty values
+    Object.keys(healthData).forEach(key => {
+      if (healthData[key] === '') {
+        healthData[key] = null;
+      }
+    });
+
+    // Send to backend
+    const response = await axios.post('http://localhost:5000/health-data', healthData);
+    
+    toast.success('Health data saved successfully!');
+    handleReset(); // Clear the form after successful submission
+  } catch (error) {
+    console.error('Error saving health data:', error);
+    toast.error('Failed to save health data. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleReset = () => {
     setFormData({

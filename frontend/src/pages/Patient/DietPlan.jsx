@@ -83,7 +83,7 @@ export default function DietPlan() {
       <div className="w-full max-w-md mx-auto">
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="px-3 py-3 bg-gradient-to-r from-green-500 to-emerald-600">
+          <div className="px-3 py-3 bg-gradient-to-r from-blue-500 to-blue-600">
             <h1 className="text-lg sm:text-xl font-bold text-white">Your Diet Plan</h1>
             <p className="text-green-50 text-xs sm:text-sm">
               Nutrition plan by your nutritionist
