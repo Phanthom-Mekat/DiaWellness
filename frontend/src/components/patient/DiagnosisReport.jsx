@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 import { 
   Upload, 
   File, 
@@ -73,34 +74,58 @@ export default function DiagnosisReport() {
 
     setUploading(true);
 
-    // Simulate file upload with progress
-    const uploadPromises = files.map((file, index) => {
-      return new Promise((resolve) => {
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 10;
-          setFiles(prev => {
-            const newFiles = [...prev];
-            newFiles[index] = { ...newFiles[index], progress };
-            return newFiles;
-          });
-
-          if (progress >= 100) {
-            clearInterval(interval);
-            setFiles(prev => {
-              const newFiles = [...prev];
-              newFiles[index] = { ...newFiles[index], status: 'completed' };
-              return newFiles;
-            });
-            resolve();
-          }
-        }, 300);
+    try {
+      const formData = new FormData();
+      
+      // Add files to FormData
+      files.forEach(file => {
+        formData.append('files', file.file);
       });
-    });
+      
+      // Add report details
+      formData.append('date', reportDetails.date);
+      formData.append('type', reportDetails.type);
+      formData.append('doctor', reportDetails.doctor);
+      formData.append('description', reportDetails.description);
+      formData.append('patientId', '100000'); // Replace with actual patient ID from auth/session
 
-    await Promise.all(uploadPromises);
-    setUploading(false);
-    toast.success('Reports uploaded successfully!');
+      // Update progress for each file
+      const config = {
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setFiles(prev => prev.map(f => ({ ...f, progress })));
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+
+      // Send request to backend
+      const response = await axios.post(
+        'http://localhost:5000/api/reports/upload',
+        formData,
+        config
+      );
+
+      // Update file statuses
+      setFiles(prev => prev.map(f => ({ ...f, status: 'completed' })));
+      toast.success('Reports uploaded successfully!');
+      
+      // Reset form after successful upload
+      setReportDetails({
+        date: '',
+        type: '',
+        doctor: '',
+        description: ''
+      });
+      setFiles([]);
+      
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(error.response?.data?.error || 'Failed to upload reports');
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -128,6 +153,7 @@ export default function DiagnosisReport() {
                   value={reportDetails.date}
                   onChange={(e) => setReportDetails(prev => ({ ...prev, date: e.target.value }))}
                   className="w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  required
                 />
               </div>
 
@@ -140,6 +166,7 @@ export default function DiagnosisReport() {
                   value={reportDetails.type}
                   onChange={(e) => setReportDetails(prev => ({ ...prev, type: e.target.value }))}
                   className="w-full rounded border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  required
                 >
                   <option value="">Select type</option>
                   {reportTypes.map(type => (
