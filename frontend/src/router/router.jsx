@@ -29,6 +29,9 @@ import ReviewDoctor from "@/pages/doctor/ReviewDoctor";
 import AccountsDashboard from "@/pages/doctor/AccountDashboard";
 import DoctorForm from "@/components/doctor/DoctorForm";
 import PatientForm from "@/components/patient/PatientForm";
+import AuthLayout from "@/layout/AuthLayout";
+import Login from "@/components/Login";
+import Register from "@/components/Register";
 
 
 const router = createBrowserRouter([
@@ -171,6 +174,20 @@ const router = createBrowserRouter([
             {
                 path:'mealRequest',
                 element:<MealRequest></MealRequest>
+            }
+        ]
+    },
+    {
+        path: 'auth',
+        element: <AuthLayout />,
+        children: [
+            {
+                path: 'login',
+                element: <Login />
+            },
+            {
+                path: 'register',
+                element: <Register/>
             }
         ]
     },

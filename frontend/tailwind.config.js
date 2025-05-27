@@ -9,8 +9,8 @@ export default {
   theme: {
   	extend: {
   		colors: {
-  			primary: '#ADD8E6',
-  			secondary: '#3498db',
+  			primary: '#3498db',
+  			secondary: '#ADD8E6',
   			tertiary: '#F5C489'
   		},
   		borderRadius: {
