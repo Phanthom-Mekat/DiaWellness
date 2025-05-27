@@ -525,6 +525,92 @@ app.delete('/api/reports/:id', (req, res) => {
     });
 });
 
+
+app.post('/users', (req, res) => {
+    const { Name, Email, Photo } = req.body;
+
+    if (!Name || !Email || !Photo) {
+        return res.status(400).json({ error: 'Name, Email, and Photo are required' });
+    }
+
+    // Check if user already exists
+    const checkUserQuery = 'SELECT * FROM tbl_patient WHERE Email = ?';
+    db.query(checkUserQuery, [Email], (checkErr, checkResults) => {
+        if (checkErr) {
+            console.error('User check error:', checkErr);
+            return res.status(500).json({ error: 'Failed to check user existence' });
+        }
+
+        if (checkResults.length > 0) {
+            return res.status(409).json({ error: 'User already exists' });
+        }
+
+        // Create new user
+        const insertUserQuery = `
+            INSERT INTO tbl_patient 
+            (Name, Email, Photo) 
+            VALUES (?, ?, ?)
+        `;
+
+        db.query(
+            insertUserQuery,
+            [Name, Email, Photo],
+            (insertErr, result) => {
+                if (insertErr) {
+                    console.error('User creation error:', insertErr);
+                    return res.status(500).json({ 
+                        error: 'Failed to create user',
+                        details: insertErr.message 
+                    });
+                }
+
+                res.status(201).json({
+                    message: 'User created successfully',
+                    userId: result.insertId,
+                    name: Name,
+                    email: Email,
+                    photo: Photo
+                });
+            }
+        );
+    });
+});
+
+// Check if user exists by email
+app.get('/users/:email', (req, res) => {
+    const email = req.params.email;
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+    }
+
+    const getUserQuery = 'SELECT * FROM tbl_patient WHERE Email = ?';
+    
+    db.query(getUserQuery, [email], (err, results) => {
+        if (err) {
+            console.error('User fetch error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to fetch user',
+                details: err.message 
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const user = results[0];
+        res.json({
+            id: user.ID,
+            name: user.Name,
+            email: user.Email,
+            photo: user.Photo
+        });
+    });
+});
+
+
+
 app.get("/", (req, res) => {
     res.send("Hello from backend");
 });
