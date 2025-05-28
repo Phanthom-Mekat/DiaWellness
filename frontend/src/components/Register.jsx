@@ -16,6 +16,7 @@ const Register = () => {
     const [isEmailFocused, setIsEmailFocused] = useState(false);
     const [isPhotoFocused, setIsPhotoFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const validatePassword = (password) => {
         if (password.length < 6) {
@@ -30,8 +31,9 @@ const Register = () => {
         return null;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
         const form = new FormData(e.target);
         const name = form.get("name");
@@ -43,61 +45,90 @@ const Register = () => {
 
         if (name.length < 3) {
             setError({ name: "Name should be more than 3 characters" });
+            setIsLoading(false);
             return;
         }
 
         const passwordError = validatePassword(password);
         if (passwordError) {
             setError({ password: passwordError });
+            setIsLoading(false);
             return;
         }
 
-        createNewUser(email, password)
-            .then((result) => {
-                const user = result.user;
-                setUser(user);
-                // console.log(user);
-                updateUserProfile({ displayName: name, photoURL: photo })
-                    .then(() => {
-                        navigate(location?.state ? location.state : "/");
-                        toast.success("Registered successfully.");
+        try {
+            // 1. Create user in Firebase
+            const userCredential = await createNewUser(email, password);
+            const user = userCredential.user;
+            setUser(user);
 
-                        const newUser = { name, email, photo }
-                        fetch('http://localhost:5000/users', {
-                            method: "POST",
-                            headers: {
-                                "content-type": "application/json"
-                            },
-                            body: JSON.stringify(newUser)
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                // console.log(data);
-                                if (data.insertedId) {
-                                    toast.success("Registered successfully.");
-                                }
-                            })
-                    })
-                    .catch((err) => console.log(err));
-            })
-            .catch((err) => {
-                // console.log(err);
-                setError({ register: err.message });
+            // 2. Update user profile in Firebase
+            await updateUserProfile({ displayName: name, photoURL: photo });
+
+            // 3. Create user in your backend
+            const newUser = { Name: name, Email: email, Photo: photo };
+            const response = await fetch('http://localhost:5000/users', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newUser)
             });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to register user in backend');
+            }
+
+            toast.success("Registered successfully!");
+            navigate(location?.state ? location.state : "/");
+
+        } catch (err) {
+            console.error("Registration error:", err);
+            setError({ register: err.message });
+            toast.error(err.message || "Registration failed");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleGoogleSignIn = () => {
-        signInWithGoogle()
-            .then((result) => {
-                const user = result.user;
-                setUser(user);
-                navigate(location?.state ? location.state : "/");
-                toast.success("Signed in successfully with Google!");
-            })
-            .catch((err) => {
-                console.log(err);
-                setError({ google: err.message });
-            });
+    const handleGoogleSignIn = async () => {
+        setIsLoading(true);
+        try {
+            const result = await signInWithGoogle();
+            const user = result.user;
+            setUser(user);
+
+            // Check if user exists in backend, if not create them
+            const checkUserResponse = await fetch(`http://localhost:5000/users/${user.email}`);
+            
+            if (checkUserResponse.status === 404) {
+                // User doesn't exist in backend, create them
+                const newUser = {
+                    Name: user.displayName,
+                    Email: user.email,
+                    Photo: user.photoURL
+                };
+
+                await fetch('http://localhost:5000/users', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newUser)
+                });
+            }
+
+            toast.success("Signed in successfully with Google!");
+            navigate(location?.state ? location.state : "/");
+        } catch (err) {
+            console.error("Google sign-in error:", err);
+            setError({ google: err.message });
+            toast.error(err.message || "Google sign-in failed");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -110,8 +141,8 @@ const Register = () => {
             </div>
             
             <div className="w-full md:w-1/2 max-w-md z-10">
-            <div className="bg-white/80 dark:bg-gray-800 glass backdrop-blur-lg shadow-xl rounded-2xl p-8 w-full transform transition-all duration-300 hover:shadow-2xl">
-                    <h2 className="text-4xl font-bold text-center text-gray-800 mb-2">
+                <div className="bg-white/80 dark:bg-gray-800 glass backdrop-blur-lg shadow-xl rounded-2xl p-8 w-full transform transition-all duration-300 hover:shadow-2xl">
+                    <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-white mb-2">
                         Create Account
                     </h2>
                     <p className="text-center text-gray-600 dark:text-gray-300 mb-8">Register to start your journey</p>
@@ -119,20 +150,18 @@ const Register = () => {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="relative">
                             <div className={`relative group ${isNameFocused ? 'focused' : ''}`}>
-                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-700      
-                                dark:text-white
-                                group-hover:text-primary transition-colors duration-200" />
+                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-700 dark:text-white group-hover:text-primary transition-colors duration-200" />
                                 <input
                                     name="name"
                                     type="text"
                                     placeholder="Enter your name"
-                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm dark:bg-gray-700/50 dark:border-gray-600"
                                     required
                                     onChange={() => setError((prev) => ({ ...prev, name: null }))}
                                     onFocus={() => setIsNameFocused(true)}
                                     onBlur={() => setIsNameFocused(false)}
                                 />
-                                <label className="absolute left-10 -top-2.5 bg-white px-2 text-sm text-gray-600 transition-all duration-200">
+                                <label className="absolute left-10 -top-2.5 bg-white dark:bg-gray-800 px-2 text-sm text-gray-600 dark:text-gray-300 transition-all duration-200">
                                     Full Name
                                 </label>
                             </div>
@@ -151,12 +180,12 @@ const Register = () => {
                                     name="email"
                                     type="email"
                                     placeholder="Enter your email"
-                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm dark:bg-gray-700/50 dark:border-gray-600"
                                     required
                                     onFocus={() => setIsEmailFocused(true)}
                                     onBlur={() => setIsEmailFocused(false)}
                                 />
-                                <label className="absolute left-10 -top-2.5 bg-white px-2 text-sm text-gray-600 transition-all duration-200">
+                                <label className="absolute left-10 -top-2.5 bg-white dark:bg-gray-800 px-2 text-sm text-gray-600 dark:text-gray-300 transition-all duration-200">
                                     Email Address
                                 </label>
                             </div>
@@ -169,12 +198,12 @@ const Register = () => {
                                     name="photo"
                                     type="url"
                                     placeholder="Enter photo URL"
-                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm dark:bg-gray-700/50 dark:border-gray-600"
                                     required
                                     onFocus={() => setIsPhotoFocused(true)}
                                     onBlur={() => setIsPhotoFocused(false)}
                                 />
-                                <label className="absolute left-10 -top-2.5 bg-white px-2 text-sm text-gray-600 transition-all duration-200">
+                                <label className="absolute left-10 -top-2.5 bg-white dark:bg-gray-800 px-2 text-sm text-gray-600 dark:text-gray-300 transition-all duration-200">
                                     Photo URL
                                 </label>
                             </div>
@@ -187,7 +216,7 @@ const Register = () => {
                                     name="password"
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="Enter your password"
-                                    className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                                    className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 bg-white/50 backdrop-blur-sm dark:bg-gray-700/50 dark:border-gray-600"
                                     required
                                     onChange={() => setError((prev) => ({ ...prev, password: null }))}
                                     onFocus={() => setIsPasswordFocused(true)}
@@ -196,11 +225,11 @@ const Register = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                                 >
                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
-                                <label className="absolute left-10 -top-2.5 bg-white px-2 text-sm text-gray-600 transition-all duration-200">
+                                <label className="absolute left-10 -top-2.5 bg-white dark:bg-gray-800 px-2 text-sm text-gray-600 dark:text-gray-300 transition-all duration-200">
                                     Password
                                 </label>
                             </div>
@@ -213,7 +242,7 @@ const Register = () => {
                         </div>
 
                         {error.register && (
-                            <div className="flex items-center gap-2 text-red-500 text-sm p-3 bg-red-50 rounded-lg">
+                            <div className="flex items-center gap-2 text-red-500 text-sm p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
                                 <AlertCircle className="w-5 h-5" />
                                 <span>{error.register}</span>
                             </div>
@@ -221,32 +250,43 @@ const Register = () => {
 
                         <button 
                             type="submit"
-                            className="w-full bg-primary text-white py-3 px-4 rounded-xl hover:bg-primary-dark transform hover:-translate-y-0.5 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:outline-none shadow-lg hover:shadow-xl"
+                            className="w-full bg-primary text-white py-3 px-4 rounded-xl hover:bg-primary-dark transform hover:-translate-y-0.5 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:outline-none shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+                            disabled={isLoading}
                         >
-                            <DiamondPlus className="w-6 h-6 inline mr-1" />
-                             Create Account
+                            {isLoading ? (
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            ) : (
+                                <>
+                                    <DiamondPlus className="w-6 h-6 inline mr-1" />
+                                    Create Account
+                                </>
+                            )}
                         </button>
 
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-200"></div>
+                                <div className="w-full border-t border-gray-200 dark:border-gray-600"></div>
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="px-4 bg-white text-gray-500">Or continue with</span>
+                                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300">Or continue with</span>
                             </div>
                         </div>
 
                         <button
                             type="button"
                             onClick={handleGoogleSignIn}
-                            className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 transform hover:-translate-y-0.5 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 focus:outline-none bg-white/50 backdrop-blur-sm"
+                            className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transform hover:-translate-y-0.5 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 focus:outline-none bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
+                            disabled={isLoading}
                         >
                             <FaGoogle className="text-xl text-primary" />
-                            <span className="text-gray-700 font-medium">Continue with Google</span>
+                            <span className="text-gray-700 dark:text-gray-200 font-medium">Continue with Google</span>
                         </button>
                     </form>
                     
-                    <p className="mt-8 text-center text-sm text-gray-600">
+                    <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-300">
                         Already have an account?{' '}
                         <Link 
                             to="/auth/login" 
