@@ -536,11 +536,9 @@ app.delete('/api/reports/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
     const { Name, Email, Photo } = req.body;
-
     if (!Name || !Email || !Photo) {
         return res.status(400).json({ error: 'Name, Email, and Photo are required' });
     }
-
     // Check if user already exists
     const checkUserQuery = 'SELECT * FROM tbl_patient WHERE Email = ?';
     db.query(checkUserQuery, [Email], (checkErr, checkResults) => {
@@ -548,18 +546,15 @@ app.post('/users', (req, res) => {
             console.error('User check error:', checkErr);
             return res.status(500).json({ error: 'Failed to check user existence' });
         }
-
         if (checkResults.length > 0) {
             return res.status(409).json({ error: 'User already exists' });
         }
-
         // Create new user
         const insertUserQuery = `
             INSERT INTO tbl_patient 
             (Name, Email, Photo) 
             VALUES (?, ?, ?)
         `;
-
         db.query(
             insertUserQuery,
             [Name, Email, Photo],
@@ -571,7 +566,6 @@ app.post('/users', (req, res) => {
                         details: insertErr.message 
                     });
                 }
-
                 res.status(201).json({
                     message: 'User created successfully',
                     userId: result.insertId,
