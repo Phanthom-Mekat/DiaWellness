@@ -609,7 +609,167 @@ app.get('/users/:email', (req, res) => {
     });
 });
 
+app.put('/patients/:id', upload.single('image'), async (req, res) => {
+    try {
+        const patientId = req.params.id;
+        const {
+            name,
+            email,
+            phoneNumber,
+            location,
+            gender,
+            bloodType,
+            age
+        } = req.body;
 
+        // Basic validation
+        if (!patientId || !name || !email) {
+            return res.status(400).json({ error: 'Patient ID, name, and email are required' });
+        }
+
+        // Check if patient exists
+        const checkPatientQuery = 'SELECT * FROM tbl_patient WHERE ID = ?';
+        db.query(checkPatientQuery, [patientId], (checkErr, checkResults) => {
+            if (checkErr) {
+                console.error('Patient check error:', checkErr);
+                return res.status(500).json({ error: 'Failed to check patient existence' });
+            }
+
+            if (checkResults.length === 0) {
+                return res.status(404).json({ error: 'Patient not found' });
+            }
+
+            // Handle image upload if present
+            let imageUrl = checkResults[0].Photo; // Keep existing photo if no new one uploaded
+
+            if (req.file) {
+                // For this example, we'll just store the file name/path
+                // In a real application, you would upload to cloud storage or save the file
+                imageUrl = `/uploads/patients/${patientId}_${Date.now()}_${req.file.originalname}`;
+                
+                // Save file to disk (you would need to create the uploads directory)
+                fs.writeFileSync(`.${imageUrl}`, req.file.buffer);
+            }
+
+            // Update patient in database
+            const updatePatientQuery = `
+                UPDATE tbl_patient 
+                SET 
+                    Name = ?,
+                    Email = ?,
+                    PhoneNumber = ?,
+                    Location = ?,
+                    Gender = ?,
+                    BloodType = ?,
+                    Age = ?,
+                    Photo = ?,
+                    LastUpdated = NOW()
+                WHERE 
+                    ID = ?
+            `;
+
+            db.query(
+                updatePatientQuery,
+                [
+                    name,
+                    email,
+                    phoneNumber || null,
+                    location || null,
+                    gender || null,
+                    bloodType || null,
+                    age || null,
+                    imageUrl,
+                    patientId
+                ],
+                (updateErr, result) => {
+                    if (updateErr) {
+                        console.error('Patient update error:', updateErr);
+                        return res.status(500).json({ 
+                            error: 'Failed to update patient',
+                            details: updateErr.message 
+                        });
+                    }
+
+                    // Get updated patient data
+                    const getPatientQuery = 'SELECT * FROM tbl_patient WHERE ID = ?';
+                    db.query(getPatientQuery, [patientId], (getErr, patientData) => {
+                        if (getErr) {
+                            console.error('Patient fetch error:', getErr);
+                            return res.status(500).json({ 
+                                error: 'Failed to fetch updated patient data',
+                                details: getErr.message 
+                            });
+                        }
+
+                        if (patientData.length === 0) {
+                            return res.status(404).json({ message: 'Patient not found after update' });
+                        }
+
+                        const updatedPatient = patientData[0];
+                        res.json({
+                            message: 'Patient profile updated successfully',
+                            patient: {
+                                id: updatedPatient.ID,
+                                name: updatedPatient.Name,
+                                email: updatedPatient.Email,
+                                phoneNumber: updatedPatient.PhoneNumber,
+                                location: updatedPatient.Location,
+                                gender: updatedPatient.Gender,
+                                bloodType: updatedPatient.BloodType,
+                                age: updatedPatient.Age,
+                                photo: updatedPatient.Photo
+                            }
+                        });
+                    });
+                }
+            );
+        });
+    } catch (error) {
+        console.error('Patient update error:', error);
+        res.status(500).json({ 
+            error: 'Failed to update patient',
+            details: error.message 
+        });
+    }
+});
+
+// Get patient profile
+app.get('/patients/:id', (req, res) => {
+    const patientId = req.params.id;
+
+    if (!patientId) {
+        return res.status(400).json({ error: 'Patient ID is required' });
+    }
+
+    const getPatientQuery = 'SELECT * FROM tbl_patient WHERE ID = ?';
+    
+    db.query(getPatientQuery, [patientId], (err, results) => {
+        if (err) {
+            console.error('Patient fetch error:', err);
+            return res.status(500).json({ 
+                error: 'Failed to fetch patient',
+                details: err.message 
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+
+        const patient = results[0];
+        res.json({
+            id: patient.ID,
+            name: patient.Name,
+            email: patient.Email,
+            phoneNumber: patient.PhoneNumber,
+            location: patient.Location,
+            gender: patient.Gender,
+            bloodType: patient.BloodType,
+            age: patient.Age,
+            photo: patient.Photo
+        });
+    });
+});
 
 app.get("/", (req, res) => {
     res.send("Hello from backend");
