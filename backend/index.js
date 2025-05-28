@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const mysql = require("mysql");
 const multer = require("multer");
 const fs = require("fs");
-
+const path = require('path');
 dotenv.config();    
 const port = process.env.PORT || 5000;
 
@@ -24,7 +24,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'mekat',
+    password: '',
     database: 'dbms_project',
 });
 
@@ -58,6 +58,65 @@ const upload = multer({
     }
 });
 
+const patientImageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = './uploads/patients';
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'patient-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+app.use((error, req, res, next) => {
+    if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: 'File too large. Maximum size is 5MB.' });
+        }
+    }
+    
+    if (error.message === 'Only image files are allowed') {
+        return res.status(400).json({ error: 'Only image files are allowed' });
+    }
+    
+    console.error('Unhandled error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+});
+
+
+const uploadPatientImage = multer({ 
+    storage: patientImageStorage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'), false);
+        }
+    }
+});
+
+app.use('/uploads', express.static('uploads'));
+
+app.use((error, req, res, next) => {
+    if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: 'File too large. Maximum size is 5MB.' });
+        }
+    }
+    
+    if (error.message === 'Only image files are allowed') {
+        return res.status(400).json({ error: 'Only image files are allowed' });
+    }
+    
+    console.error('Unhandled error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+});
 // Existing routes...
 app.get('/doctors', (req, res) => {
     const sql = 'SELECT * FROM tbl_doctor';
@@ -617,9 +676,9 @@ app.get('/users/:email', (req, res) => {
     });
 });
 
-app.put('/patients/:id', upload.single('image'), async (req, res) => {
+app.put('/patients/:email', uploadPatientImage.single('image'), (req, res) => {
     try {
-        const patientId = req.params.id;
+        const patientEmail = req.params.email; // Changed from id to email
         const {
             name,
             email,
@@ -630,14 +689,30 @@ app.put('/patients/:id', upload.single('image'), async (req, res) => {
             age
         } = req.body;
 
-        // Basic validation
-        if (!patientId || !name || !email) {
-            return res.status(400).json({ error: 'Patient ID, name, and email are required' });
+        // Enhanced validation
+        if (!patientEmail || !name || !email) {
+            return res.status(400).json({ error: 'Patient email, name, and email are required' });
         }
 
-        // Check if patient exists
-        const checkPatientQuery = 'SELECT * FROM tbl_patient WHERE ID = ?';
-        db.query(checkPatientQuery, [patientId], (checkErr, checkResults) => {
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Validate phone number if provided
+        if (phoneNumber && phoneNumber.trim() && !/^\+?[1-9]\d{1,14}$/.test(phoneNumber)) {
+            return res.status(400).json({ error: 'Invalid phone number format' });
+        }
+
+        // Validate age if provided
+        if (age && (parseInt(age) < 0 || parseInt(age) > 120)) {
+            return res.status(400).json({ error: 'Age must be between 0 and 120' });
+        }
+
+        // Check if patient exists by email
+        const checkPatientQuery = 'SELECT * FROM tbl_patient WHERE Email = ?';
+        db.query(checkPatientQuery, [patientEmail], (checkErr, checkResults) => {
             if (checkErr) {
                 console.error('Patient check error:', checkErr);
                 return res.status(500).json({ error: 'Failed to check patient existence' });
@@ -647,90 +722,103 @@ app.put('/patients/:id', upload.single('image'), async (req, res) => {
                 return res.status(404).json({ error: 'Patient not found' });
             }
 
-            // Handle image upload if present
-            let imageUrl = checkResults[0].Photo; // Keep existing photo if no new one uploaded
+            const currentPatient = checkResults[0];
 
-            if (req.file) {
-                // For this example, we'll just store the file name/path
-                // In a real application, you would upload to cloud storage or save the file
-                imageUrl = `/uploads/patients/${patientId}_${Date.now()}_${req.file.originalname}`;
-                
-                // Save file to disk (you would need to create the uploads directory)
-                fs.writeFileSync(`.${imageUrl}`, req.file.buffer);
-            }
-
-            // Update patient in database
-            const updatePatientQuery = `
-                UPDATE tbl_patient 
-                SET 
-                    Name = ?,
-                    Email = ?,
-                    PhoneNumber = ?,
-                    Location = ?,
-                    Gender = ?,
-                    BloodType = ?,
-                    Age = ?,
-                    Photo = ?,
-                    LastUpdated = NOW()
-                WHERE 
-                    ID = ?
-            `;
-
-            db.query(
-                updatePatientQuery,
-                [
-                    name,
-                    email,
-                    phoneNumber || null,
-                    location || null,
-                    gender || null,
-                    bloodType || null,
-                    age || null,
-                    imageUrl,
-                    patientId
-                ],
-                (updateErr, result) => {
-                    if (updateErr) {
-                        console.error('Patient update error:', updateErr);
-                        return res.status(500).json({ 
-                            error: 'Failed to update patient',
-                            details: updateErr.message 
-                        });
+            // Check if new email is already taken by another patient (only if email is being changed)
+            if (email !== patientEmail) {
+                const emailCheckQuery = 'SELECT ID FROM tbl_patient WHERE Email = ? AND Email != ?';
+                db.query(emailCheckQuery, [email, patientEmail], (emailErr, emailResults) => {
+                    if (emailErr) {
+                        console.error('Email check error:', emailErr);
+                        return res.status(500).json({ error: 'Failed to validate email' });
                     }
 
-                    // Get updated patient data
-                    const getPatientQuery = 'SELECT * FROM tbl_patient WHERE ID = ?';
-                    db.query(getPatientQuery, [patientId], (getErr, patientData) => {
-                        if (getErr) {
-                            console.error('Patient fetch error:', getErr);
+                    if (emailResults.length > 0) {
+                        return res.status(400).json({ error: 'Email is already in use by another patient' });
+                    }
+
+                    // Proceed with update
+                    performUpdate();
+                });
+            } else {
+                // Email not changed, proceed with update
+                performUpdate();
+            }
+
+            function performUpdate() {
+                // Handle image upload
+                let photoPath = currentPatient.Photo; // Keep existing photo
+                
+                if (req.file) {
+                    // Delete old photo if it exists and it's not a default photo
+                    if (photoPath && !photoPath.startsWith('http') && fs.existsSync(photoPath)) {
+                        try {
+                            fs.unlinkSync(photoPath);
+                        } catch (error) {
+                            console.log('Could not delete old photo:', error.message);
+                        }
+                    }
+                    photoPath = `/uploads/patients/${req.file.filename}`;
+                }
+
+                // Update patient in database
+                const updatePatientQuery = `
+                    UPDATE tbl_patient 
+                    SET 
+                        Name = ?,
+                        Email = ?,
+                        \`Phone Number\` = ?,
+                        Address = ?,
+                        Gender = ?,
+                        \`Blood Type\` = ?,
+                        Age = ?,
+                        Photo = ?
+                    WHERE 
+                        Email = ?
+                `;  
+
+                db.query(
+                    updatePatientQuery,
+                    [
+                        name,
+                        email,
+                        phoneNumber || null,
+                        location || null,
+                        gender || null,
+                        bloodType || null,
+                        age ? parseInt(age) : null,
+                        photoPath,
+                        patientEmail // Use original email for WHERE clause
+                    ],
+                    (updateErr, result) => {
+                        if (updateErr) {
+                            console.error('Patient update error:', updateErr);
                             return res.status(500).json({ 
-                                error: 'Failed to fetch updated patient data',
-                                details: getErr.message 
+                                error: 'Failed to update patient',
+                                details: updateErr.message 
                             });
                         }
 
-                        if (patientData.length === 0) {
-                            return res.status(404).json({ message: 'Patient not found after update' });
+                        if (result.affectedRows === 0) {
+                            return res.status(404).json({ error: 'Patient not found or no changes made' });
                         }
 
-                        const updatedPatient = patientData[0];
+                        // Return updated patient data in the format expected by frontend
                         res.json({
                             message: 'Patient profile updated successfully',
-                            patient: {
-                                id: updatedPatient.ID,
-                                name: updatedPatient.Name,
-                                email: updatedPatient.Email,
-                                phoneNumber: updatedPatient.PhoneNumber,
-                                location: updatedPatient.Location,
-                                gender: updatedPatient.Gender,
-                                bloodType: updatedPatient.BloodType,
-                                age: updatedPatient.Age,
-                                photo: updatedPatient.Photo
-                            }
+                            id: currentPatient.ID,
+                            name: name,
+                            email: email,
+                            phoneNumber: phoneNumber || null,
+                            location: location || null,
+                            gender: gender || null,
+                            bloodType: bloodType || null,
+                            age: age ? parseInt(age) : null,
+                            photo: photoPath
                         });
-                    });
-                }
-            );
+                    }
+                );
+            }
         });
     } catch (error) {
         console.error('Patient update error:', error);
@@ -741,17 +829,19 @@ app.put('/patients/:id', upload.single('image'), async (req, res) => {
     }
 });
 
-// Get patient profile
-app.get('/patients/:id', (req, res) => {
-    const patientId = req.params.id;
 
-    if (!patientId) {
-        return res.status(400).json({ error: 'Patient ID is required' });
+
+// Get patient profile
+app.get('/patients/:email', (req, res) => {
+    const patientEmail = req.params.email; // Changed from id to email
+
+    if (!patientEmail) {
+        return res.status(400).json({ error: 'Patient email is required' });
     }
 
-    const getPatientQuery = 'SELECT * FROM tbl_patient WHERE ID = ?';
+    const getPatientQuery = 'SELECT * FROM tbl_patient WHERE Email = ?'; // Changed from ID to Email
     
-    db.query(getPatientQuery, [patientId], (err, results) => {
+    db.query(getPatientQuery, [patientEmail], (err, results) => {
         if (err) {
             console.error('Patient fetch error:', err);
             return res.status(500).json({ 
@@ -761,10 +851,12 @@ app.get('/patients/:id', (req, res) => {
         }
 
         if (results.length === 0) {
-            return res.status(404).json({ message: 'Patient not found' });
+            return res.status(404).json({ error: 'Patient not found' });
         }
 
         const patient = results[0];
+        
+        // Return data in the format expected by frontend
         res.json({
             id: patient.ID,
             name: patient.Name,
@@ -778,6 +870,20 @@ app.get('/patients/:id', (req, res) => {
         });
     });
 });
+
+// Fix 4: Add authentication middleware (optional but recommended)
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token == null) {
+        return res.sendStatus(401);
+    }
+
+    // For now, just proceed without actual JWT verification
+    // You can implement JWT verification here if needed
+    next();
+};
 
 app.get("/", (req, res) => {
     res.send("Hello from backend");
