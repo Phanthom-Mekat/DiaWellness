@@ -14,12 +14,20 @@ app.use(cors());
 app.use(express.json());
 
 // Samin DB
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'dbms_project',
+// });
+// mekat
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'mekat',
     database: 'dbms_project',
 });
+
 
 db.connect((err) => {
     if (err) {
