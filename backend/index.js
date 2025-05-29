@@ -644,9 +644,7 @@ app.get('/users/:email', (req, res) => {
     if (!email) {
         return res.status(400).json({ error: 'Email is required' });
     }
-
     const getUserQuery = 'SELECT * FROM tbl_patient WHERE Email = ?';
-    
     db.query(getUserQuery, [email], (err, results) => {
         if (err) {
             console.error('User fetch error:', err);
@@ -655,11 +653,9 @@ app.get('/users/:email', (req, res) => {
                 details: err.message 
             });
         }
-
         if (results.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
-
         const user = results[0];
         res.json({
             id: user.ID,
@@ -669,7 +665,6 @@ app.get('/users/:email', (req, res) => {
         });
     });
 });
-
 app.put('/patients/:email', uploadPatientImage.single('image'), (req, res) => {
     try {
         const patientEmail = req.params.email; // Changed from id to email
