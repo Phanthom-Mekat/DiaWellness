@@ -29,8 +29,8 @@ app.use(express.json());
 // });
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'samin',
-    password: 'samin',
+    user: 'root',
+    password: '',
     database: 'dbms_project',
 });
 
