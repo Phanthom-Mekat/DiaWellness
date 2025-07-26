@@ -21,13 +21,18 @@ app.use(express.json());
 //     database: 'dbms_project',
 // });
 // mekat
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'dbms_project',
+// });
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'samin',
     database: 'dbms_project',
 });
-
 
 db.connect((err) => {
     if (err) {
@@ -130,30 +135,39 @@ app.get('/doctors', (req, res) => {
 });
 
 app.post('/appointments', (req, res) => {
-    // Extract required data from request body
-    const { DoctorID } = req.body;
+    const { DoctorID: id, email } = req.body; // Frontend sends DoctorID as 'id'
 
-    // Validate inputs
-    if (!DoctorID) {
-        return res.status(400).json({ error: 'DoctorID is required' });
+    if (!id || !email) {
+        return res.status(400).json({ error: 'Doctor ID and email are required' });
     }
-  
-    const PatientID = 100000;
 
-    // Define VisitType if not provided in the request
-    const visitType = 'Regular Checkup';
+    const visitType = 'Regular Checkup'; // Default visit type
 
-    // SQL query to insert appointment
-    const insertAppointmentQuery = `
-        INSERT INTO tbl_appointment 
-        (DoctorID, PatientID, \`Visit Type\`) 
-        VALUES (?, ?, ?)`;
+    // Get PatientID from email
+    const findPatientQuery = 'SELECT ID FROM tbl_patient WHERE Email = ?';
+    db.query(findPatientQuery, [email], (err, results) => {
+        if (err) {
+            console.error('Error fetching patient:', err);
+            return res.status(500).json({ 
+                error: 'Database error', 
+                details: err.message 
+            });
+        }
 
-    // Execute insert query
-    db.query(
-        insertAppointmentQuery,
-        [DoctorID, PatientID, visitType],
-        (insertErr, result) => {
+        if (results.length === 0) {
+            return res.status(404).json({ 
+                error: 'No patient found with the provided email' 
+            });
+        }
+
+        const PatientID = results[0].ID;
+
+        const insertAppointmentQuery = `
+            INSERT INTO tbl_appointment 
+            (Appointment_ID, DoctorID, PatientID, \`Visit Type\`) 
+            VALUES (NULL, ?, ?, ?)`; // Let DB auto-generate Appointment_ID
+
+        db.query(insertAppointmentQuery, [id, PatientID, visitType], (insertErr, result) => {
             if (insertErr) {
                 console.error('Appointment insertion error:', insertErr);
                 return res.status(500).json({ 
@@ -162,17 +176,17 @@ app.post('/appointments', (req, res) => {
                 });
             }
 
-            // Successful insertion
             res.status(201).json({
                 message: 'Appointment created successfully',
-                appointmentId: result.insertId,
-                doctorId: DoctorID,
+                appointmentId: result.insertId, // This will be the auto-generated Appointment_ID
+                doctorId: id,
                 patientId: PatientID,
                 visitType: visitType
             });
-        }
-    );
+        });
+    });
 });
+
 
 app.get('/appointments', (req, res) => {
     // Updated SQL query with Photo included
