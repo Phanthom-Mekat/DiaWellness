@@ -188,7 +188,7 @@ const Navbar = () => {
                             <label tabIndex={0} className="btn btn-ghost btn-circle avatar group p-0 overflow-hidden ring-2 ring-blue-600/30 hover:ring-blue-600 dark:ring-blue-400/30 dark:hover:ring-blue-400 transition-all duration-300">
                                 <div className="relative w-10 h-10 rounded-full overflow-hidden">
                                     <img 
-                                        src={user?.photoURL?.split("?")[0] || "https://via.placeholder.com/150"}
+                                        src={user?.photoURL?.split("?")[0] || "https://i.pravatar.cc/100?img=11"}
                                         alt="user-profile"
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                     />
