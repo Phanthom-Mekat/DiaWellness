@@ -30,7 +30,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'app_user',
-    password: 'a_very_strong_password',
+    password: 'S3curePass!2025',
     database: 'dbms_project',
 });
 
